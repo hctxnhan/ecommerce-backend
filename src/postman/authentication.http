@@ -1,0 +1,25 @@
+### Sign up
+POST http://localhost:3000/auth/sign-up
+Content-Type: application/json
+
+{
+    "email": "thanhnhanstudy@gmail.com",
+    "name": "Thanh Nhan",
+    "password": "12345678",
+    "confirmPassword": "12345678"
+}
+
+### Sign in
+POST http://localhost:3000/auth/sign-in
+Content-Type: application/json
+
+{
+    "email": "thanhnhanstudy@gmail.com",
+    "password": "12345678"
+}
+
+### Refresh token
+POST http://localhost:3000/auth/refresh-token
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+### Get user info
