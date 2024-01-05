@@ -12,7 +12,7 @@ const configs = {
     host: process.env.HOST || 'localhost'
   },
   auth: {
-    saltRounds: Number.parseInt(process.env.SALT_ROUNDS || 10),
+    saltRounds: Number.parseInt(process.env.SALT_ROUNDS, 10) || 10,
     jwtSecret: process.env.JWT_SECRET,
     apiKeySecret: process.env.APIKEY_SECRET,
     accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,

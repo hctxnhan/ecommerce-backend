@@ -15,3 +15,8 @@ export const HttpMethod = {
   PATCH: 'patch',
   DELETE: 'delete'
 };
+
+export const SortDirection = {
+  ASC: 1,
+  DESC: -1
+};

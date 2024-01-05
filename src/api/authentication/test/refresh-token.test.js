@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import createHttpError from 'http-errors';
-import refreshToken from '../controllers/refresh-token';
+import refreshToken from '../controllers/refreshToken.js';
 import { verifyToken } from '../auth.utils';
 import {
   didRefreshTokenUsed,
@@ -29,9 +29,11 @@ describe('Refresh token handler', () => {
 
     await refreshToken.handler(req);
 
-    expect(() => refreshToken.handler(req)).toThrowError(createHttpError(httpStatus.BAD_REQUEST, {
-      message: 'Refresh token is required'
-    }));
+    expect(() => refreshToken.handler(req)).toThrowError(
+      createHttpError(httpStatus.BAD_REQUEST, {
+        message: 'Refresh token is required'
+      })
+    );
   });
 
   it('Should throw error if the token is used before', async () => {
@@ -45,9 +47,7 @@ describe('Refresh token handler', () => {
     await refreshToken.handler(req, res);
 
     await expect(refreshToken.handler(req, res)).rejects.toThrowError(
-      createHttpError(httpStatus.BAD_REQUEST, {
-        message: 'Refresh token has been used'
-      })
+      createHttpError.BadRequest('Refresh token has been used')
     );
   });
 

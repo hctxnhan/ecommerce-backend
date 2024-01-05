@@ -1,7 +1,7 @@
 import express from 'express';
-import signUp from './controllers/sign-up.js';
-import signIn from './controllers/sign-in.js';
-import refreshToken from './controllers/refresh-token.js';
+import signUp from './controllers/signUp.js';
+import signIn from './controllers/signIn.js';
+import refreshToken from './controllers/refreshToken.js';
 
 const router = express.Router();
 

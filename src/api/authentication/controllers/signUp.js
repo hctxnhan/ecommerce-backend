@@ -4,12 +4,13 @@ import createHttpError from 'http-errors';
 
 import { client, dbName } from '../../../dbs/index.js';
 import { validateReqBody } from '../../../middlewares/validateRequest.js';
-import { HttpMethod, Role, Status } from '../../../utils/enum/role.js';
+import { HttpMethod, Role, Status } from '../../../utils/enum/index.js';
 import configs from '../../../configs/index.js';
 import { createToken } from '../auth.utils.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import { success } from '../../../utils/response.js';
 import { findUserByEmail } from '../../user/user.services.js';
+import controllerFactory from '../../../utils/controllerFactory.js';
 
 const reqBodySchema = z
   .object({
@@ -31,9 +32,7 @@ async function handler(req, res) {
 
   const user = await findUserByEmail(email);
   if (user) {
-    throw createHttpError(409, {
-      message: 'User already exists.'
-    });
+    throw createHttpError.Conflict('User already exists.');
   }
 
   const hashedPassword = await bcrypt.hash(password, configs.auth.saltRounds);
@@ -65,11 +64,11 @@ async function handler(req, res) {
   }).send(res);
 }
 
-const signUp = {
-  handler: asyncHandler(handler),
-  path: '/sign-up',
-  method: HttpMethod.POST,
-  middlewares: [validateReqBody(reqBodySchema)]
-};
+const signUp = controllerFactory()
+  .method(HttpMethod.POST)
+  .path('/sign-up')
+  .handler(asyncHandler(handler))
+  .middlewares([validateReqBody(reqBodySchema)])
+  .skipAuth();
 
 export default signUp;
