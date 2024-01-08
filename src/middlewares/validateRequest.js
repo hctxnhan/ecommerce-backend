@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 import { z } from 'zod';
-import { checkApiKey } from '../api/apikey/apikey.service.js';
+import { checkApiKey } from '../api/apikey/apikey.services.js';
 import { verifyToken } from '../api/authentication/auth.utils.js';
 
 export function validateReqBody(schema) {

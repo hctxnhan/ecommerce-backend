@@ -137,7 +137,7 @@ export function findProductById(id) {
     }
   ];
 
-  return productsCollection.aggregate(pipeline).limit(1).toArray();
+  return productsCollection.aggregate(pipeline).limit(1).next();
 }
 
 export function doesUserOwnProduct(userId, productId) {

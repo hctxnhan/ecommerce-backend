@@ -3,7 +3,7 @@ import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { error, success } from '../../../utils/response.js';
-import { findProductById } from '../product.service.js';
+import { findProductById } from '../product.services.js';
 
 async function handler(req, res) {
   const { productId } = req.params;

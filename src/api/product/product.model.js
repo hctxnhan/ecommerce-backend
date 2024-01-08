@@ -3,7 +3,7 @@
 import slugify from 'slugify';
 import z from 'zod';
 
-const ProductType = {
+export const ProductType = {
   ELECTRONICS: 'electronics',
   CLOTHES: 'clothes',
   FURNITURE: 'furniture'
@@ -13,11 +13,11 @@ const CommonProductSchema = z.object({
   name: z.string(),
   thumbnail: z.string().optional(),
   price: z.number(),
-  sold: z.number(),
   description: z.string().optional(),
   variation: z.array(z.string()).default([]),
   isPublished: z.boolean().default(false),
-  type: z.enum(Object.values(ProductType))
+  type: z.enum(Object.values(ProductType)),
+  stock: z.number().default(0)
 });
 
 class Product {
@@ -33,6 +33,7 @@ class Product {
     });
     this.variation = data.variation;
     this.isPublished = data.isPublished;
+    this.stock = data.stock;
     this.avgRating = 0;
   }
 }

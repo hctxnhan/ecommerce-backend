@@ -1,0 +1,67 @@
+### Create a discount
+POST http://localhost:3000/discounts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+
+{
+  "name": "Summer Sale",
+  "description": "Get 20% off on all products",
+  "type": "percentage",
+  "value": 20,
+  "startDate": "2024-01-05T15:47:19.000Z",
+  "endDate": "2024-01-10T15:47:19.000Z",
+  "minOrderValue": 50,
+  "usageLimit": 100,
+  "usageLimitPerUser": 5,
+  "code": "SUMMER20",
+  "isActive": true,
+  "applyType": "all",
+  "applyValue": []
+}
+
+### Get all discount's products
+GET http://localhost:3000/discounts/CLOTHES20/products?limit=10&page=1
+Content-Type: application/json
+
+### Get all discounts of a product
+GET http://localhost:3000/products/65968c30199a454054a0df89/discounts?limit=10&page=1
+Content-Type: application/json
+
+### Get all discounts of a user
+GET http://localhost:3000/users/6593e3eb6fa27e45ab0f7cb5/discounts?limit=10&page=1
+
+### Apply discount to a cart
+POST http://localhost:3000/discounts/SUMMER20/applyDiscount
+Content-Type: application/json
+
+{
+  "totalValue": 10,
+  "carts": [
+    {
+      "productId": "123",
+      "quantity": 2,
+      "type": "clothes",
+      "price": 100,
+      "brand": "nike"
+    },
+    {
+      "productId": "456",
+      "quantity": 1,
+      "type": "electronics",
+      "price": 200,
+      "brand": "apple"
+    },
+    {
+      "productId": "789",
+      "quantity": 1,
+      "type": "clothes",
+      "price": 200,
+      "brand": "adidas"
+    }
+  ]
+}
+
+### Delete a discount
+DELETE http://localhost:3000/discounts/HAHA20
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks

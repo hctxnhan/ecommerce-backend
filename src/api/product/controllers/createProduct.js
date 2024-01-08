@@ -7,16 +7,24 @@ import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import { productFactory } from '../product.model.js';
+import { createInventory } from '../../inventory/inventory.services.js';
 
 async function handler(req, res) {
-  const database = client.db(dbName);
-  const productsCollection = database.collection('products');
-
   const product = productFactory(req.body);
 
+  const database = client.db(dbName);
+  const productsCollection = database.collection('products');
   const result = await productsCollection.insertOne({
     ...product,
-    owner: new ObjectId(req.user.userId)
+    owner: new ObjectId(req.user.userId),
+    sold: 0
+  });
+
+  const { insertedId: productId } = result;
+  await createInventory({
+    productId,
+    stock: product.stock,
+    userId: req.user.userId
   });
 
   return success({

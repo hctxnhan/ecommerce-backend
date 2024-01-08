@@ -6,6 +6,7 @@ import unpublishProduct from './controllers/unpublishProduct.js';
 import findAllProduct from './controllers/findAllProduct.js';
 import findOneProduct from './controllers/findOneProduct.js';
 import patchProduct from './controllers/patchProduct.js';
+import findProductDiscounts from './controllers/findProductDiscounts.js';
 
 const router = express.Router();
 
@@ -16,7 +17,8 @@ const controllers = [
   unpublishProduct,
   findAllProduct,
   findOneProduct,
-  patchProduct
+  patchProduct,
+  findProductDiscounts
 ];
 
 controllers.forEach((controller) => {

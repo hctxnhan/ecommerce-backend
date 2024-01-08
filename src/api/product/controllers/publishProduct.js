@@ -4,7 +4,7 @@ import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
-import { doesUserOwnProduct, updateProductById } from '../product.service.js';
+import { doesUserOwnProduct, updateProductById } from '../product.services.js';
 
 async function handler(req, res) {
   const { productId } = req.params;

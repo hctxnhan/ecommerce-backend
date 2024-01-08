@@ -9,7 +9,7 @@ import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
-import { findProducts } from '../product.service.js';
+import { findProducts } from '../product.services.js';
 
 const QuerySchema = z.object({
   status: z.enum(['published', 'draft']).default('published')

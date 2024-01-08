@@ -4,7 +4,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
 
 {
-  "name": "T-Shirt",
+  "name": "T-Shirt 2",
   "thumbnail": "https://example.com/tshirt.jpg",
   "price": 19.99,
   "sold": 0,
