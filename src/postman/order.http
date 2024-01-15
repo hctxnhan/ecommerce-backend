@@ -1,0 +1,8 @@
+### Review checkout
+POST http://localhost:3000/orders/review
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU
+
+{
+  "discountCodes": ["CLOTHES20"]
+}

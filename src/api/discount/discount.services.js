@@ -1,24 +1,36 @@
 import { ObjectId } from 'mongodb';
-import { client, dbName } from '../../dbs/index.js';
+import { connect } from '../../dbs/index.js';
 import { findProductById } from '../product/product.services.js';
 import { DiscountApplyType, DiscountType } from './discount.models.js';
 
 export async function createDiscount(ownerId, data) {
-  return client
-    .db(dbName)
-    .collection('discounts')
-    .insertOne({
-      ...data,
-      owner: new ObjectId(ownerId),
-      usedBy: [],
-      usedCount: 0
-    });
+  return connect.DISCOUNTS().insertOne({
+    ...data,
+    owner: new ObjectId(ownerId),
+    usedBy: [],
+    usedCount: 0
+  });
+}
+
+export function getDiscounts(discountCodes, includeExpired = false) {
+  const query = {
+    code: {
+      $in: discountCodes
+    }
+  };
+
+  if (!includeExpired) {
+    query.endDate = {
+      $gte: new Date().toISOString()
+    };
+  }
+
+  return connect.DISCOUNTS().find(query).toArray();
 }
 
 export function findAllDiscounts(ownerId, { page = 1, limit = 10 } = {}) {
-  return client
-    .db(dbName)
-    .collection('discounts')
+  return connect
+    .DISCOUNTS()
     .find({
       owner: new ObjectId(ownerId),
       endDate: {
@@ -31,9 +43,8 @@ export function findAllDiscounts(ownerId, { page = 1, limit = 10 } = {}) {
 }
 
 export function isOwnerOfDiscount(discountCode, ownerId) {
-  return client
-    .db(dbName)
-    .collection('discounts')
+  return connect
+    .DISCOUNTS()
     .findOne({
       code: discountCode,
       owner: new ObjectId(ownerId)
@@ -42,28 +53,45 @@ export function isOwnerOfDiscount(discountCode, ownerId) {
 }
 
 export function findDiscountByCode(code) {
-  return client
-    .db(dbName)
-    .collection('discounts')
-    .findOne({
-      code,
-      endDate: {
-        $gte: new Date().toISOString()
-      }
-    });
+  return connect.DISCOUNTS().findOne({
+    code,
+    endDate: {
+      $gte: new Date().toISOString()
+    }
+  });
 }
 
 /*
   Initially we have a cart that contains product with interface like this:
   {
-    _id: '123',
-    quantity: 2,
-    type: 'clothes' | 'furniture' | 'electronics',
-    price: 100,
-    brand: 'nike',
+    items: [
+      {
+        "productId": "6596c29b8860b8a9e5d24697",
+        "quantity": 5,
+        "price": 19.99,
+        "name": "Nhan Hoang edited",
+        "description": "This is a wrist band",
+        "thumbnail": "https://example.com/tshirt.jpg",
+        "slug": "wristband-cotay",
+        "avgRating": 0,
+        "attributes": {
+          "brand": "Nike",
+          "material": "Jean",
+          "size": "L",
+          "color": "Blue"
+        },
+        "type": "clothes",
+        "ownerId": "5f9d88b9d4b7e7b3a8d1e6b1"
+      }
+    ],
+    totalValue: 99.95
   }
 */
-export async function applyDiscount(code, totalValue = 0, carts = []) {
+export async function applyDiscount(
+  code,
+  totalValue = 0,
+  cart = { items: [] }
+) {
   const validDiscount = await findDiscountByCode(code);
   if (!validDiscount) {
     return {
@@ -79,7 +107,8 @@ export async function applyDiscount(code, totalValue = 0, carts = []) {
     applyValue,
     type,
     value,
-    minOrderValue
+    minOrderValue,
+    owner
     // usageLimit,
     // usageLimitPerUser,
     // usedCount
@@ -103,7 +132,12 @@ export async function applyDiscount(code, totalValue = 0, carts = []) {
     };
   }
 
-  const calculatedCarts = carts.map((product) => {
+  const calculatedCarts = cart.items.map((product) => {
+    const productOwner =
+      typeof product.ownerId === 'string'
+        ? product.ownerId
+        : product.ownerId.toString();
+
     const canApplied =
       (applyType === DiscountApplyType.CATEGORIES &&
         applyValue.includes(product.type)) ||
@@ -113,21 +147,24 @@ export async function applyDiscount(code, totalValue = 0, carts = []) {
         applyValue.includes(product._id)) ||
       applyType === DiscountApplyType.ALL;
 
-    if (!canApplied) {
+    if (!canApplied && !(productOwner !== owner.toString())) {
       return {
         ...product,
         totalPriceAfterDiscount: product.price
       };
     }
 
+    const currentPrice = product.totalPriceAfterDiscount ?? product.price;
+
     const totalPriceAfterDiscount =
       type === DiscountType.PERCENTAGE
-        ? product.price * (1 - value / 100)
-        : product.price - value;
+        ? currentPrice * (1 - value / 100)
+        : currentPrice - value;
 
     return {
       ...product,
-      totalPriceAfterDiscount
+      totalPriceAfterDiscount:
+        totalPriceAfterDiscount < 0 ? 0 : totalPriceAfterDiscount
     };
   });
 
@@ -135,7 +172,7 @@ export async function applyDiscount(code, totalValue = 0, carts = []) {
     isValid: true,
     reason: 'VALID',
     message: 'Discount code is valid!',
-    carts: calculatedCarts,
+    cart: calculatedCarts,
     totalValueAfterDiscount: calculatedCarts.reduce(
       (acc, cur) => acc + cur.totalPriceAfterDiscount * cur.quantity,
       0
@@ -144,7 +181,7 @@ export async function applyDiscount(code, totalValue = 0, carts = []) {
 }
 
 export function deleteDiscount(code) {
-  return client.db(dbName).collection('discounts').deleteOne({
+  return connect.DISCOUNTS().deleteOne({
     code
   });
 }
@@ -159,9 +196,8 @@ export async function findAllProductDiscounts(
     return [];
   }
 
-  return client
-    .db(dbName)
-    .collection('discounts')
+  return connect
+    .DISCOUNTS()
     .find({
       $or: [
         {
@@ -369,9 +405,5 @@ export function findAllDiscountProducts(
     }
   ];
 
-  return client
-    .db(dbName)
-    .collection('discounts')
-    .aggregate(pipeline)
-    .toArray();
+  return connect.DISCOUNTS().aggregate(pipeline).toArray();
 }

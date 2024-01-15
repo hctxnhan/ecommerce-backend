@@ -1,13 +1,13 @@
-import { client, dbName } from '../../dbs/index.js';
+import { connect } from '../../dbs/index.js';
 
 export function didRefreshTokenUsed(refreshToken) {
-  return client.db(dbName).collection('tokens').findOne({
+  return connect.TOKENS().findOne({
     token: refreshToken
   });
 }
 
 export function usedRefreshToken(refreshToken, userId, expiresAt) {
-  return client.db(dbName).collection('tokens').insertOne({
+  return connect.TOKENS().insertOne({
     token: refreshToken,
     type: 'refresh',
     userId,

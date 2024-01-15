@@ -1,16 +1,16 @@
 import bcrypt from 'bcrypt';
-import { z } from 'zod';
 import createHttpError from 'http-errors';
+import { z } from 'zod';
 
-import { client, dbName } from '../../../dbs/index.js';
-import { validateReqBody } from '../../../middlewares/validateRequest.js';
-import { HttpMethod, Role, Status } from '../../../utils/enum/index.js';
 import configs from '../../../configs/index.js';
-import { createToken } from '../auth.utils.js';
+import { connect } from '../../../dbs/index.js';
+import { validateReqBody } from '../../../middlewares/validateRequest.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
+import controllerFactory from '../../../utils/controllerFactory.js';
+import { HttpMethod, Role, Status } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import { findUserByEmail } from '../../user/user.services.js';
-import controllerFactory from '../../../utils/controllerFactory.js';
+import { createToken } from '../auth.utils.js';
 
 const reqBodySchema = z
   .object({
@@ -25,9 +25,6 @@ const reqBodySchema = z
   });
 
 async function handler(req, res) {
-  const database = client.db(dbName);
-  const usersCollection = database.collection('users');
-
   const { email, password, name } = req.body;
 
   const user = await findUserByEmail(email);
@@ -37,7 +34,7 @@ async function handler(req, res) {
 
   const hashedPassword = await bcrypt.hash(password, configs.auth.saltRounds);
 
-  const result = await usersCollection.insertOne({
+  const result = await connect.USERS().insertOne({
     email,
     password: hashedPassword,
     name,

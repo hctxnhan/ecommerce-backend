@@ -1,20 +1,17 @@
 import httpStatus from 'http-status';
 import { ObjectId } from 'mongodb';
 
-import { client, dbName } from '../../../dbs/index.js';
+import { connect } from '../../../dbs/index.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
-import { productFactory } from '../product.model.js';
 import { createInventory } from '../../inventory/inventory.services.js';
+import { productFactory } from '../product.model.js';
 
 async function handler(req, res) {
   const product = productFactory(req.body);
-
-  const database = client.db(dbName);
-  const productsCollection = database.collection('products');
-  const result = await productsCollection.insertOne({
+  const result = await connect.PRODUCTS().insertOne({
     ...product,
     owner: new ObjectId(req.user.userId),
     sold: 0

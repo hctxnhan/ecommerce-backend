@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { client, dbName } from '../../dbs/index.js';
+import { connect } from '../../dbs/index.js';
 import { SortDirection } from '../../utils/enum/index.js';
 
 export function findProducts(
@@ -13,9 +13,6 @@ export function findProducts(
     }
   } = {}
 ) {
-  const database = client.db(dbName);
-  const productsCollection = database.collection('products');
-
   const skip = (page - 1) * limit;
 
   let pipeline = [];
@@ -88,13 +85,10 @@ export function findProducts(
     ]
   );
 
-  return productsCollection.aggregate(pipeline);
+  return connect.PRODUCTS().aggregate(pipeline);
 }
 
 export function findProductById(id) {
-  const database = client.db(dbName);
-  const productsCollection = database.collection('products');
-
   const pipeline = [
     {
       $match: {
@@ -137,26 +131,22 @@ export function findProductById(id) {
     }
   ];
 
-  return productsCollection.aggregate(pipeline).limit(1).next();
+  return connect.PRODUCTS().aggregate(pipeline).limit(1).next();
 }
 
 export function doesUserOwnProduct(userId, productId) {
-  const database = client.db(dbName);
-  const productsCollection = database.collection('products');
-
-  return productsCollection.findOne({
+  return connect.PRODUCTS().findOne({
     _id: new ObjectId(productId),
     owner: new ObjectId(userId)
   });
 }
 
 export function updateProductById(id, update) {
-  const database = client.db(dbName);
-  const productsCollection = database.collection('products');
-
-  return productsCollection.findOneAndUpdate(
-    { _id: new ObjectId(id) },
-    { $set: update },
-    { returnOriginal: false }
-  );
+  return connect
+    .PRODUCTS()
+    .findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: update },
+      { returnOriginal: false }
+    );
 }
