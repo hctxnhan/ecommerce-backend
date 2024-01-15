@@ -8,7 +8,6 @@ const { dbName } = configs.db;
 export { client, dbName };
 
 export const connect = {
-  _client: client,
   USERS: () => client.db(dbName).collection('users'),
   PRODUCTS: () => client.db(dbName).collection('products'),
   CARTS: () => client.db(dbName).collection('carts'),
@@ -16,5 +15,6 @@ export const connect = {
   DISCOUNTS: () => client.db(dbName).collection('discounts'),
   INVENTORY: () => client.db(dbName).collection('inventory'),
   TOKENS: () => client.db(dbName).collection('tokens'),
-  COMMENTS: () => client.db(dbName).collection('comments')
+  COMMENTS: () => client.db(dbName).collection('comments'),
+  startSession: () => client.startSession()
 };

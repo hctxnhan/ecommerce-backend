@@ -6,29 +6,25 @@ import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
-import { findCommentById } from '../comment.services.js';
 import Comment from '../comment.models.js';
 
-const reqBodySchema = z
-  .object({
-    content: z.string(),
-    productId: z.string(),
-    parentComment: z.string().optional()
-  })
-  .strip();
+const reqBodySchema = z.object({
+  content: z.string(),
+  productId: z.string(),
+  parentCommentId: z.string().optional()
+});
 
 async function handler(req, res) {
-  if (req.body.parentId) {
-    const parentComment = await findCommentById(req.body.parentId);
-    if (!parentComment) {
-      throw createHttpError.BadRequest('Comment parent not found!');
+  const result = await Comment.create({
+    ...req.body,
+    userId: req.user.userId
+  });
+
+  if (!result.success) {
+    if (result.reason === 'INTERNAL_SERVER_ERROR') {
+      throw createHttpError.InternalServerError(result.message);
     }
-  }
-
-  const createdComment = await Comment.create(req.body);
-
-  if (!createdComment) {
-    throw createHttpError.BadRequest('Cannot create comment!');
+    throw createHttpError.BadRequest(result.message);
   }
 
   return success({

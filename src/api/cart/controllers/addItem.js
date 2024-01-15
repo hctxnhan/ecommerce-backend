@@ -9,15 +9,13 @@ import { success } from '../../../utils/response.js';
 import { addItemToCart } from '../cart.services.js';
 import { findProductById } from '../../product/product.services.js';
 
-const reqBodySchema = z
-  .object({
-    productId: z.string(),
-    productName: z.string(),
-    quantity: z.number(),
-    price: z.number(),
-    ownerId: z.string()
-  })
-  .strip();
+const reqBodySchema = z.object({
+  productId: z.string(),
+  productName: z.string(),
+  quantity: z.number(),
+  price: z.number(),
+  ownerId: z.string()
+});
 
 async function handler(req, res) {
   const product = await findProductById(req.body.productId);

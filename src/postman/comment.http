@@ -1,8 +1,40 @@
-### Review checkout
-POST http://localhost:3000/orders/review
+### Create comment 1
+POST http://localhost:3000/comments
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU
 
 {
-  "discountCodes": ["CLOTHES20"]
+  "content": "This is a comment 1",
+  "productId": "65968c30199a454054a0df89"
 }
+
+### Create comment 2
+POST http://localhost:3000/comments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU
+
+{
+  "content": "This is a comment 2",
+  "productId": "65968c30199a454054a0df89"
+}
+
+### Create comment 1.1
+POST http://localhost:3000/comments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU
+
+{
+  "content": "This is a comment 1.1",
+  "productId": "65968c30199a454054a0df89",
+  "parentCommentId": "65a55704d7581f8313d71b31"
+}
+
+### Get Comments
+GET http://localhost:3000/comments?page=1&limit=10&productId=65968c30199a454054a0df89&parentCommentId=65a548d3e00e4a61b459ffa8
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU
+
+### Delete Comment
+DELETE http://localhost:3000/comments/65a55704d7581f8313d71b31
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU

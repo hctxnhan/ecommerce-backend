@@ -9,11 +9,9 @@ import { findProductById } from '../../product/product.services.js';
 import { findCartOfCustomer, updateCart } from '../cart.services.js';
 import { validateReqBody } from '../../../middlewares/validateRequest.js';
 
-const reqBodySchema = z
-  .object({
-    quantity: z.number()
-  })
-  .strip();
+const reqBodySchema = z.object({
+  quantity: z.number()
+});
 
 async function handler(req, res) {
   const product = await findProductById(req.params.productId);

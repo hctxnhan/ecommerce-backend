@@ -10,11 +10,9 @@ import { calculateCartEager as computeCartEager } from '../../cart/cart.services
 import { applyDiscount } from '../../discount/discount.services.js';
 import { placeOrder } from '../order.services.js';
 
-const reqBodySchema = z
-  .object({
-    discountCodes: z.array(z.string())
-  })
-  .strip();
+const reqBodySchema = z.object({
+  discountCodes: z.array(z.string())
+});
 
 async function handler(req, res) {
   const cart = await computeCartEager(req.user.userId);
