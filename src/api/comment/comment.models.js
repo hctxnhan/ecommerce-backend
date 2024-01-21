@@ -1,6 +1,6 @@
 import z from 'zod';
 import { ObjectId } from 'mongodb';
-import { connect } from '../../dbs/index.js';
+import { connect } from '../../services/dbs/index.js';
 import { findCommentById } from './comment.services.js';
 import { findProductById } from '../product/product.services.js';
 

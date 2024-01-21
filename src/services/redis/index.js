@@ -22,7 +22,7 @@ export async function acquireLock(
       return true;
     }
 
-    // eslint-disable-next-line no-await-in-loop
+    // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
     await new Promise((resolve) => setTimeout(resolve, retryDelay));
   }
 

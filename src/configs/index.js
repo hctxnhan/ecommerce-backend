@@ -21,7 +21,15 @@ const configs = {
   db: {
     url: process.env.MONGO_URL,
     dbName: process.env.MONGO_DB_NAME
-  }
+  },
+  mailTransfer: {
+    service: process.env.MAIL_TRANSFER_SERVICE,
+    auth: {
+      user: process.env.MAIL_TRANSFER_USER,
+      password: process.env.MAIL_TRANSFER_PASSWORD
+    }
+  },
+  env: process.env.NODE_ENV || 'development',
 };
 
 export default configs;

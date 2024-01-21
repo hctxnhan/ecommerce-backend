@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import { connect } from '../../dbs/index.js';
-import { acquireLock, releaseLock } from '../../redis/index.js';
+import { connect } from '../../services/dbs/index.js';
+import { acquireLock, releaseLock } from '../../services/redis/index.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export function createInventory({ productId, stock, userId }) {

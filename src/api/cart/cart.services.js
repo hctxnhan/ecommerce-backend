@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { connect } from '../../dbs/index.js';
+import { connect } from '../../services/dbs/index.js';
 
 export function createCart(customerId) {
   if (!customerId) throw new Error('customerId is required!');

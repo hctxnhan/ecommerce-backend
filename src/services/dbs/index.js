@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import configs from '../configs/index.js';
+import configs from '../../configs/index.js';
 
 const uri = configs.db.url;
 const client = new MongoClient(uri);
@@ -16,5 +16,6 @@ export const connect = {
   INVENTORY: () => client.db(dbName).collection('inventory'),
   TOKENS: () => client.db(dbName).collection('tokens'),
   COMMENTS: () => client.db(dbName).collection('comments'),
+  VERIFY_CODES: () => client.db(dbName).collection('verifyCodes'),
   startSession: () => client.startSession()
 };

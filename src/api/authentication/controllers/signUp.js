@@ -3,14 +3,18 @@ import createHttpError from 'http-errors';
 import { z } from 'zod';
 
 import configs from '../../../configs/index.js';
-import { connect } from '../../../dbs/index.js';
 import { validateReqBody } from '../../../middlewares/validateRequest.js';
+import { connect } from '../../../services/dbs/index.js';
+import { Mail } from '../../../services/nodemailer/index.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod, Role, Status } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import { findUserByEmail } from '../../user/user.services.js';
-import { createToken } from '../auth.utils.js';
+import {
+  VerifyPurpose,
+  createVerifyCode
+} from '../../verifyCode/verifyCode.services.js';
 
 const reqBodySchema = z
   .object({
@@ -34,7 +38,7 @@ async function handler(req, res) {
 
   const hashedPassword = await bcrypt.hash(password, configs.auth.saltRounds);
 
-  const result = await connect.USERS().insertOne({
+  await connect.USERS().insertOne({
     email,
     password: hashedPassword,
     name,
@@ -43,21 +47,17 @@ async function handler(req, res) {
     verified: false
   });
 
-  const tokens = await createToken({
-    _id: result.insertedId,
-    role: Role.USER,
-    status: Status.ACTIVE,
-    verified: false,
-    email
+  const verificationCode = await createVerifyCode({
+    email,
+    purpose: VerifyPurpose.SIGN_UP
   });
+
+  await Mail.verifySignup({ to: email, verificationCode }).send();
 
   return success({
     status: 201,
-    message: 'User created successfully',
-    data: {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken
-    }
+    message:
+      'An email has been sent to your email address. Get the code and verify your account to complete the sign up process. The code will expire in 5 minutes.'
   }).send(res);
 }
 

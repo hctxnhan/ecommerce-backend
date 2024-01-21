@@ -1,4 +1,4 @@
-import { connect } from '../../dbs/index.js';
+import { connect } from '../../services/dbs/index.js';
 
 export function didRefreshTokenUsed(refreshToken) {
   return connect.TOKENS().findOne({

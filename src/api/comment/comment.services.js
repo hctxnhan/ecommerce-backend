@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { connect } from '../../dbs/index.js';
+import { connect } from '../../services/dbs/index.js';
 
 export function findCommentById(commentId) {
   return connect.COMMENTS().findOne({ _id: new ObjectId(commentId) });

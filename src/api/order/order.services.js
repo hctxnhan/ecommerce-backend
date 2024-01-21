@@ -1,4 +1,4 @@
-import { connect } from '../../dbs/index.js';
+import { connect } from '../../services/dbs/index.js';
 import { reservationInventory } from '../inventory/inventory.services.js';
 import { OrderSchema, OrderStatus } from './order.models.js';
 

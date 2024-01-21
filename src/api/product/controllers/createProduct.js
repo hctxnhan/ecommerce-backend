@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import { ObjectId } from 'mongodb';
 
-import { connect } from '../../../dbs/index.js';
+import { connect } from '../../../services/dbs/index.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';

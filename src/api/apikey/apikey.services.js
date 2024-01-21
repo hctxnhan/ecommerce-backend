@@ -1,4 +1,4 @@
-import { client, dbName } from '../../dbs/index.js';
+import { client, dbName } from '../../services/dbs/index.js';
 
 export async function checkApiKey(apiKey) {
   const db = client.db(dbName);

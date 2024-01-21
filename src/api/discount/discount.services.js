@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { connect } from '../../dbs/index.js';
+import { connect } from '../../services/dbs/index.js';
 import { findProductById } from '../product/product.services.js';
 import { DiscountApplyType, DiscountType } from './discount.models.js';
 

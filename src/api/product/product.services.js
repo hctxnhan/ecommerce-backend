@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { connect } from '../../dbs/index.js';
+import { connect } from '../../services/dbs/index.js';
 import { SortDirection } from '../../utils/enum/index.js';
 
 export function findProducts(
