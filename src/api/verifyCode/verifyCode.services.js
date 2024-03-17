@@ -6,7 +6,7 @@ export const VerifyPurpose = {
 };
 
 export function generateVerifyCode() {
-  return Math.floor(Math.random() * 1000000);
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 export async function createVerifyCode({ email, purpose }) {
@@ -47,6 +47,8 @@ export async function verifyCode({ email, code, purpose }) {
       message: 'Invalid code'
     };
   }
+
+  console.log(existingCode.expiredAt, new Date().toISOString());
 
   if (existingCode.expiredAt < new Date().toISOString()) {
     return {

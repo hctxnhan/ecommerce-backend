@@ -9,9 +9,8 @@ async function handler(req, res) {
   const { productId } = req.params;
   const result = await findProductById(productId);
 
-  const product = result[0];
 
-  if (!product) {
+  if (!result) {
     return error({
       message: 'Product not found',
       status: httpStatus.NOT_FOUND
@@ -20,7 +19,7 @@ async function handler(req, res) {
 
   return success({
     status: httpStatus.OK,
-    data: product
+    data: result
   }).send(res);
 }
 

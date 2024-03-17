@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
     "email": "thanhnhanstudy@gmail.com",
-    "code": "639195",
+    "code": "235982",
     "password": "thanhnhan"
 }
 
@@ -32,7 +32,7 @@ Content-Type: application/json
 
 {
     "email": "thanhnhanstudy@gmail.com",
-    "password": "thanhnhan"
+    "password": "0914220605"
 }
 
 ### Refresh token
@@ -45,3 +45,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZ
 ### Test email
 GET http://localhost:3000/auth/test
 Content-Type: application/json
+
+### Get pre-signed url for avatar
+GET http://localhost:3000/auth/profile/avatar/presigned-url
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWRiMDBkNWI4MWFjMDU5Nzc0Mjk2ZTciLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjp0cnVlLCJlbWFpbCI6InRoYW5obmhhbnN0dWR5QGdtYWlsLmNvbSIsImlhdCI6MTcxMDQwMTQzNywiZXhwIjoxNzEwNDg3ODM3fQ.ccb8TQULJesNYViga6LIw4kVjYPaS-Dd5Nk_9JMsr6k

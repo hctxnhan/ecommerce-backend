@@ -11,15 +11,17 @@ import { success } from '../../../utils/response.js';
 import { findProducts } from '../product.services.js';
 
 const QuerySchema = z.object({
-  search: z.string().default('')
+  search: z.string().default(''),
+  type: z.string().default('')
 });
 
 async function handler(req, res) {
-  const { search, page, limit } = req.query;
+  const { search, page, limit, type = 'all' } = req.query;
 
   const result = await findProducts(
     {
-      isPublished: true
+      isPublished: true,
+      type: type === 'all' ? { $ne: 'all' } : type
     },
     {
       search,

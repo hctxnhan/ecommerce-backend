@@ -36,7 +36,7 @@ async function handler(req, res) {
 
 const applyDiscountToCart = controllerFactory()
   .method(HttpMethod.POST)
-  .path('/:discountCode/applyDiscount')
+  .path('/:discountCode/apply-discount')
   .handler(asyncHandler(handler))
   .middlewares([validateReqBody(reqBodySchema)])
   .skipAuth();

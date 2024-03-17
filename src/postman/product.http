@@ -48,10 +48,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZ
 }
 
 ### Find products
-GET http://localhost:3000/products?limit=10&page=1
+GET http://localhost:3000/products?limit=10&page=1&type=all
 Content-Type: application/json
 
 
 ### Find product by id
-GET http://localhost:3000/products/65968c30199a454054a0df89
+GET http://localhost:3000/products/6597754a7ecfb67259dd7cc8
 Content-Type: application/json

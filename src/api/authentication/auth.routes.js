@@ -6,6 +6,8 @@ import testMail from './controllers/testMail.js';
 import verify from './controllers/verifySignup.js';
 import resendVerifyCode from './controllers/resendVerifyCode.js';
 import resetPassword from './controllers/resetPassword.js';
+import getUserInfo from './controllers/getUserInfo.js';
+import getPresignedUrl from './controllers/getPresignedUrl.js';
 
 const router = express.Router();
 
@@ -16,7 +18,9 @@ const controllers = [
   testMail,
   verify,
   resendVerifyCode,
-  resetPassword
+  resetPassword,
+  getUserInfo,
+  getPresignedUrl
 ];
 
 controllers.forEach((controller) => {

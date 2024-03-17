@@ -24,7 +24,7 @@ export function createOrder(
   );
 }
 
-export async function placeOrder(userId, calculatedCart) {
+export async function placeOrder(userId, calculatedCart, deliveryAddress) {
   const { items } = calculatedCart;
 
   const session = await connect.startSession();
@@ -50,9 +50,7 @@ export async function placeOrder(userId, calculatedCart) {
         {
           customerId: userId,
           shippingInfo: {
-            address: '123',
-            name: '123',
-            phone: '123'
+            ...deliveryAddress
           },
           items: calculatedCart.items,
           totalValue: calculatedCart.totalValue
@@ -78,4 +76,15 @@ export async function placeOrder(userId, calculatedCart) {
   return {
     success: true
   };
+}
+
+export function updatePrimaryDeliveryAddress(userId, address) {
+  return connect.USERS().updateOne(
+    { _id: userId },
+    {
+      $set: {
+        primaryDeliveryAddress: address
+      }
+    }
+  );
 }

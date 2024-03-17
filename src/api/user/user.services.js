@@ -10,7 +10,14 @@ export function findUserByEmail(email) {
 }
 
 export function findUserById(userId) {
-  return connect.USERS().findOne({ _id: new ObjectId(userId) });
+  return connect.USERS().findOne(
+    { _id: new ObjectId(userId) },
+    {
+      projection: {
+        password: 0
+      }
+    }
+  );
 }
 
 export function updateUser(filter, update) {

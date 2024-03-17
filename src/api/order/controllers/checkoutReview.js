@@ -1,29 +1,34 @@
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
+import { ObjectId } from 'mongodb';
 import { z } from 'zod';
 import { validateReqBody } from '../../../middlewares/validateRequest.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
-import { calculateCartEager as computeCartEager } from '../../cart/cart.services.js';
 import { applyDiscount } from '../../discount/discount.services.js';
-import { placeOrder } from '../order.services.js';
 
 const reqBodySchema = z.object({
-  discountCodes: z.array(z.string())
+  discountCodes: z.array(z.string()).optional().default([]),
+  cart: z.object({
+    total: z.number(),
+    count: z.number(),
+    items: z.array(
+      z.object({
+        productId: z.string().transform((val) => new ObjectId(val)),
+        productName: z.string(),
+        quantity: z.number(),
+        price: z.number(),
+        total: z.number(),
+        ownerId: z.string().transform((val) => new ObjectId(val))
+      })
+    )
+  })
 });
 
 async function handler(req, res) {
-  const cart = await computeCartEager(req.user.userId);
-
-  if (!cart) {
-    throw createHttpError.BadRequest(
-      'Please add items to cart first then checkout again!'
-    );
-  }
-
-  const { discountCodes } = req.body;
+  const { discountCodes, cart } = req.body;
 
   const calculatedCartDiscount = cart;
 
@@ -32,29 +37,21 @@ async function handler(req, res) {
     const {
       isValid,
       totalValueAfterDiscount,
+      reason,
       cart: cartAfterDiscount
       // eslint-disable-next-line no-await-in-loop
     } = await applyDiscount(
       code,
-      calculatedCartDiscount.totalValue,
+      calculatedCartDiscount.total,
       calculatedCartDiscount
     );
 
     if (!isValid) {
-      throw createHttpError.BadRequest(`Discount code ${code} is invalid!`);
+      throw createHttpError.BadRequest(reason);
     }
 
-    calculatedCartDiscount.totalValue = totalValueAfterDiscount;
+    calculatedCartDiscount.total = totalValueAfterDiscount;
     calculatedCartDiscount.items = cartAfterDiscount;
-  }
-
-  const result = await placeOrder(req.user.userId, calculatedCartDiscount);
-
-  if (!result.success) {
-    if (result.reason === 'INTERNAL_SERVER_ERROR') {
-      throw createHttpError.InternalServerError(result.message);
-    }
-    throw createHttpError.BadRequest(result.message);
   }
 
   return success({

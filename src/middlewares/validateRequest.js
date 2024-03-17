@@ -10,6 +10,7 @@ export function validateReqBody(schema) {
       req.body = reqBody;
       next();
     } catch (error) {
+      console.log(JSON.stringify(error, null, 2));
       next(error);
     }
   };
@@ -27,6 +28,14 @@ export async function validateToken(req, res, next) {
 
     next();
   } catch (error) {
+    if (
+      error.name === 'JsonWebTokenError' ||
+      error.name === 'TokenExpiredError'
+    ) {
+      next(createHttpError.Unauthorized('Invalid access token'));
+      return;
+    }
+
     next(error);
   }
 }

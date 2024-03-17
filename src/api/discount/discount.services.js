@@ -61,32 +61,6 @@ export function findDiscountByCode(code) {
   });
 }
 
-/*
-  Initially we have a cart that contains product with interface like this:
-  {
-    items: [
-      {
-        "productId": "6596c29b8860b8a9e5d24697",
-        "quantity": 5,
-        "price": 19.99,
-        "name": "Nhan Hoang edited",
-        "description": "This is a wrist band",
-        "thumbnail": "https://example.com/tshirt.jpg",
-        "slug": "wristband-cotay",
-        "avgRating": 0,
-        "attributes": {
-          "brand": "Nike",
-          "material": "Jean",
-          "size": "L",
-          "color": "Blue"
-        },
-        "type": "clothes",
-        "ownerId": "5f9d88b9d4b7e7b3a8d1e6b1"
-      }
-    ],
-    totalValue: 99.95
-  }
-*/
 export async function applyDiscount(
   code,
   totalValue = 0,
@@ -108,7 +82,8 @@ export async function applyDiscount(
     type,
     value,
     minOrderValue,
-    owner
+    owner,
+    usedBy
     // usageLimit,
     // usageLimitPerUser,
     // usedCount
@@ -122,6 +97,16 @@ export async function applyDiscount(
   //     discount: null
   //   };
   // }
+
+  // check if user has used this discount code
+  if (usedBy?.includes(owner.toString())) {
+    return {
+      isValid: false,
+      reason: 'ALREADY_USED',
+      message: 'Discount code has been used by you!',
+      discount: null
+    };
+  }
 
   if (totalValue < minOrderValue) {
     return {
