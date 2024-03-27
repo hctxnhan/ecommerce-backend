@@ -1,0 +1,8 @@
+{
+  "rest-client.environmentVariables": {
+    "local": {
+      "baseUrl": "http://localhost:3000",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWRiMDBkNWI4MWFjMDU5Nzc0Mjk2ZTciLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjp0cnVlLCJlbWFpbCI6InRoYW5obmhhbnN0dWR5QGdtYWlsLmNvbSIsImlhdCI6MTcxMTUxOTU0NCwiZXhwIjoxNzQzMDU1NTQ0fQ.Axm3WYbGaYYu7aZ8uM5t2jcBW58f8rmkcqxMPwdDhCA"
+    }
+  }
+}

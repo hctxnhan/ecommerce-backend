@@ -13,7 +13,7 @@ import {
 } from '../../verifyCode/verifyCode.services.js';
 
 const querySchema = z.object({
-  code: z.coerce.number(),
+  code: z.coerce.string(),
   email: z.string().email()
 });
 

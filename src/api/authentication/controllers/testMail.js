@@ -14,8 +14,6 @@ async function handler(req, res) {
     purpose: VerifyPurpose.SIGN_UP
   });
 
-  console.log(code);
-
   // await sendMail({
   //   to: 'thanhnhanstudy@gmail.com',
   //   locals: {

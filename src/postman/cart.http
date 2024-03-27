@@ -1,7 +1,7 @@
 ### Add item to cart
 POST http://localhost:3000/carts/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU
+Authorization: {{token}}
 
 {
   "productId": "6597754a7ecfb67259dd7cc8",
@@ -14,7 +14,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZ
 ### Remove item out of cart
 DELETE http://localhost:3000/carts/items/65968c30199a454054a0df89
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 {
   "productId": "6596c29b8860b8a9e5d24697",
@@ -27,17 +27,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZ
 ### Empty cart
 PUT http://localhost:3000/carts/empty
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 ### Get cart
 GET http://localhost:3000/carts/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 ### Update item quantity in cart
 PATCH http://localhost:3000/carts/items/6596c29b8860b8a9e5d24697
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 {
   "quantity": 5

@@ -16,6 +16,8 @@ export const connect = {
   INVENTORY: () => client.db(dbName).collection('inventory'),
   TOKENS: () => client.db(dbName).collection('tokens'),
   COMMENTS: () => client.db(dbName).collection('comments'),
+  ORDER_ITEMS: () => client.db(dbName).collection('orderItems'),
   VERIFY_CODES: () => client.db(dbName).collection('verifyCodes'),
-  startSession: () => client.startSession()
+  withSession: client.withSession.bind(client),
+  startSession: client.startSession.bind(client)
 };

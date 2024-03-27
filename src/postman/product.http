@@ -1,7 +1,7 @@
 ### Create product
 POST http://localhost:3000/products
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 {
   "name": "T-Shirt 2",
@@ -21,22 +21,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZ
 ### Find my products
 GET http://localhost:3000/products/my-products?status=draft&limit=10&page=1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 ### Publish product
 PUT http://localhost:3000/products/6596c29b8860b8a9e5d24697/publish
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 ### Unpublish product
 PUT http://localhost:3000/products/6596c29b8860b8a9e5d24697/unpublish
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 ### Patch product
 PATCH http://localhost:3000/products/6596c29b8860b8a9e5d24697
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQyMTE5NDEsImV4cCI6MTcwNDgxNjc0MX0.s6lK5fc4U0QYR2TOuBuLU7K4H4-p2gserrnTWhgy0ks
+Authorization: {{token}}
 
 {
   "name": "Nhan Hoang edited",
@@ -48,10 +48,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZ
 }
 
 ### Find products
-GET http://localhost:3000/products?limit=10&page=1
+GET http://localhost:3000/products?limit=10&page=1&type=all
 Content-Type: application/json
 
 
 ### Find product by id
-GET http://localhost:3000/products/65968c30199a454054a0df89
+GET http://localhost:3000/products/6597754a7ecfb67259dd7cc8
 Content-Type: application/json

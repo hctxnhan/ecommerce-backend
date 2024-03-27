@@ -1,8 +1,40 @@
 ### Review checkout
 POST http://localhost:3000/orders/review
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTkzZTNlYjZmYTI3ZTQ1YWIwZjdjYjUiLCJyb2xlIjoidXNlciIsInN0YXR1cyI6ImFjdGl2ZSIsInZlcmlmaWVkIjpmYWxzZSwiZW1haWwiOiJ0aGFuaG5oYW5zdHVkeUBnbWFpbC5jb20iLCJpYXQiOjE3MDQ4MTg3MzUsImV4cCI6MTcwNTQyMzUzNX0.2mNLWza4oUm15NQbDYBeefTXkCsVNj63LFxmgBGaakU
+Authorization: {{token}}
 
 {
   "discountCodes": ["CLOTHES20"]
 }
+
+
+### Checkout
+POST http://localhost:3000/orders/checkout
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "discountCodes": ["CLOTHES20"],
+  "deliveryAddress": {
+    "address": "Linh Dog",
+    "city": "Thu Duc",
+    "name": "Nhan Thanh",
+    "phone": "0984909703",
+    "isPrimary": true
+  }
+}
+
+### Get my orders
+GET http://localhost:3000/orders/my-orders
+Content-Type: application/json
+Authorization: {{token}}
+
+### Get order detail
+GET http://localhost:3000/orders/6603b38e382ebd6cfe07c92b
+Content-Type: application/json
+Authorization: {{token}}
+
+### Change order product status
+POST http://localhost:3000/orders/6603b38e382ebd6cfe07c92b/6603b38e382ebd6cfe07c92b/shipping
+Content-Type: application/json
+Authorization: {{token}}

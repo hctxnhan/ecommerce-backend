@@ -1,20 +1,21 @@
+import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
+import { toObjectId } from '../../utils/index.js';
 import { reservationInventory } from '../inventory/inventory.services.js';
 import { OrderSchema, OrderStatus } from './order.models.js';
 
-export function createOrder(
+export async function createOrder(
   { customerId, shippingInfo, items, totalValue },
   { session }
 ) {
   const order = OrderSchema.parse({
     customerId,
     shippingInfo,
-    items,
     totalValue,
-    status: OrderStatus.PENDING
+    quantity: items.reduce((acc, item) => acc + item.quantity, 0)
   });
 
-  return connect.ORDERS().insertOne(
+  const createdOrder = await connect.ORDERS().insertOne(
     {
       ...order,
       createdAt: new Date().toISOString(),
@@ -22,60 +23,148 @@ export function createOrder(
     },
     { session }
   );
+
+  const orderItems = items.map((item) => ({
+    ...item,
+    orderId: createdOrder.insertedId,
+    status: OrderStatus.PENDING
+  }));
+
+  await connect.ORDER_ITEMS().insertMany(orderItems, { session });
+
+  return createdOrder;
 }
 
-export async function placeOrder(userId, calculatedCart) {
+export async function placeOrder(userId, calculatedCart, deliveryAddress) {
   const { items } = calculatedCart;
 
-  const session = await connect.startSession();
+  const res = await connect.withSession(async (session) =>
+    session
+      .withTransaction(async () => {
+        try {
+          const result = await Promise.all(
+            items.map(async (item) =>
+              reservationInventory(userId, item, session)
+            )
+          );
 
-  try {
-    await session.withTransaction(async () => {
-      const result = await Promise.all(
-        items.map(async (item) => reservationInventory(item, session))
-      );
+          const failedItem = result.find((r) => !r.success);
 
-      const failedItem = result.find((r) => !r.success);
+          if (failedItem) {
+            session.abortTransaction();
 
-      if (failedItem) {
-        return {
-          success: false,
-          reason: failedItem.reason,
-          message: failedItem.message,
-          failedItem
-        };
+            return {
+              success: false,
+              reason: failedItem.reason,
+              message: failedItem.message,
+              failedItem
+            };
+          }
+
+          await createOrder(
+            {
+              customerId: userId,
+              shippingInfo: {
+                ...deliveryAddress
+              },
+              items: calculatedCart.items,
+              totalValue: calculatedCart.totalValue
+            },
+            { session }
+          );
+
+          await connect.CARTS().deleteOne(
+            { customerId: userId },
+            {
+              session
+            }
+          );
+
+          return {
+            message: 'Order placed successfully',
+            success: true
+          };
+        } catch (err) {
+          return {
+            success: false,
+            reason: 'INTERNAL_SERVER_ERROR',
+            message: 'Something went wrong'
+          };
+        }
+      }, null)
+      .finally(() => {
+        session.endSession();
+      })
+  );
+
+  return res;
+}
+
+export function updatePrimaryDeliveryAddress(userId, address) {
+  return connect.USERS().updateOne(
+    { _id: userId },
+    {
+      $set: {
+        primaryDeliveryAddress: address
       }
+    }
+  );
+}
 
-      await createOrder(
-        {
-          customerId: userId,
-          shippingInfo: {
-            address: '123',
-            name: '123',
-            phone: '123'
-          },
-          items: calculatedCart.items,
-          totalValue: calculatedCart.totalValue
-        },
-        { session }
-      );
+export function findMyOrders(userId, { page, limit }) {
+  return connect
+    .ORDERS()
+    .find({ customerId: userId })
+    .project({
+      _id: 1,
+      customerId: 1,
+      shippingInfo: 1,
+      totalValue: 1,
+      status: 1,
+      createdAt: 1
+    })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .toArray();
+}
 
-      return {
-        success: true
-      };
-    });
-  } catch (err) {
-    console.log(err);
-    return {
-      success: false,
-      reason: 'INTERNAL_SERVER_ERROR',
-      message: 'Something went wrong'
-    };
-  } finally {
-    session.endSession();
-  }
+export function findOrderById(orderId) {
+  return connect.ORDERS().find({ _id: new ObjectId(orderId) });
+}
 
-  return {
-    success: true
-  };
+export function getOrderDetailById(orderId) {
+  return connect
+    .ORDERS()
+    .aggregate([
+      {
+        $match: {
+          _id: new ObjectId(orderId)
+        }
+      },
+      {
+        $lookup: {
+          from: 'orderItems',
+          localField: '_id',
+          foreignField: 'orderId',
+          as: 'items'
+        }
+      }
+    ])
+    .toArray();
+}
+
+export function updateProductOrderStatus(orderId, productId, ownerId, status, session) {
+  return connect.ORDER_ITEMS().updateOne(
+    {
+      orderId: toObjectId(orderId),
+      productId: toObjectId(productId),
+      ownerId: toObjectId(ownerId)
+    },
+    {
+      $set: {
+        status
+      }
+    },
+    { session }
+  );
 }

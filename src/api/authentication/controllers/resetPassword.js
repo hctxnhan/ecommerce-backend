@@ -16,7 +16,7 @@ import {
 } from '../../verifyCode/verifyCode.services.js';
 
 const reqBodySchema = z.object({
-  code: z.coerce.number(),
+  code: z.coerce.string(),
   email: z.string().email(),
   password: z.string().min(8)
 });

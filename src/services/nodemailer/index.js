@@ -12,7 +12,6 @@ const email = new Email({
       pass: configs.mailTransfer.auth.password
     }
   },
-  // send: configs.env === 'production',
   send: true,
   preview: {
     open: {
@@ -23,8 +22,6 @@ const email = new Email({
   }
 });
 
-console.log(configs.mailTransfer.auth);
-
 export default async function sendMail({ to, template, locals }) {
   return email
     .send({
@@ -34,7 +31,6 @@ export default async function sendMail({ to, template, locals }) {
       },
       locals
     })
-    .then(console.log)
     .catch(console.error);
 }
 

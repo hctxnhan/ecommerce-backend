@@ -12,11 +12,12 @@ export function createInventory({ productId, stock, userId }) {
 }
 
 export async function reservationInventory(
-  { productId, quantity, cartId },
-  { session }
+  userId,
+  { productId, quantity },
+  session
 ) {
   const lockKey = `inventory_product:${productId}`;
-  const value = cartId;
+  const value = userId;
 
   const lockAcquired = await acquireLock(lockKey, value);
   const release = () => releaseLock(lockKey);
@@ -29,33 +30,39 @@ export async function reservationInventory(
     };
   }
 
-  const result = await connect.INVENTORY().findOneAndUpdate(
-    {
-      productId: new ObjectId(productId),
-      stock: { $gte: quantity }
-    },
-    {
-      $inc: { stock: -quantity }
-    },
-    {
-      returnOriginal: false,
-      session
+  try {
+    const result = await connect.INVENTORY().findOneAndUpdate(
+      {
+        productId: new ObjectId(productId),
+        stock: { $gte: quantity }
+      },
+      {
+        $inc: { stock: -quantity }
+      },
+      {
+        session,
+        returnOriginal: false
+      }
+    );
+
+    if (!result) {
+      return {
+        success: false,
+        reason: 'OUT_OF_STOCK',
+        message: 'Out of stock'
+      };
     }
-  );
 
-  release();
-
-  if (!result.ok) {
+    return {
+      success: true
+    };
+  } catch (error) {
     return {
       success: false,
-      reason: 'OUT_OF_STOCK',
-      message: 'Out of stock'
+      reason: 'INTERNAL_SERVER_ERROR',
+      message: error.message
     };
+  } finally {
+    release();
   }
-
-  release();
-
-  return {
-    success: true
-  };
 }
