@@ -121,7 +121,7 @@ export async function applyDiscount(
     const productOwner =
       typeof product.ownerId === 'string'
         ? product.ownerId
-        : product.ownerId.toString();
+        : product.ownerId?.toString();
 
     const canApplied =
       (applyType === DiscountApplyType.CATEGORIES &&

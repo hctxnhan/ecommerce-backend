@@ -51,7 +51,7 @@ export async function placeOrder(userId, calculatedCart, deliveryAddress) {
           const failedItem = result.find((r) => !r.success);
 
           if (failedItem) {
-            session.abortTransaction();
+            await session.abortTransaction();
 
             return {
               success: false,

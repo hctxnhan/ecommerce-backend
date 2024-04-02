@@ -14,7 +14,7 @@ const reqBodySchema = z.object({
   productName: z.string(),
   quantity: z.number(),
   price: z.number(),
-  ownerId: z.string()
+  ownerId: z.string().optional()
 });
 
 async function handler(req, res) {
