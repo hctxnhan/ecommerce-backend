@@ -10,7 +10,7 @@
     "sourceType": "module"
   },
   "rules": {
-    "linebreak-style": ["error", "windows"],
+    "linebreak-style": ["error", "os"],
     "import/extensions": "off",
     "comma-dangle": "off",
     "no-underscore-dangle": "off",

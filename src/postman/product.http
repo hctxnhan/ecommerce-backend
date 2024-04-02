@@ -48,7 +48,7 @@ Authorization: {{token}}
 }
 
 ### Find products
-GET http://localhost:3000/products?limit=10&page=1&type=all
+GET http://localhost:3000/products?limit=10&page=1&type=all&search=tv
 Content-Type: application/json
 
 
