@@ -23,7 +23,7 @@ export function findProducts(
         $search: {
           search: {
             query: search,
-            path: ['name', 'description']
+            path: ['name', 'description'],
           }
         }
       }
