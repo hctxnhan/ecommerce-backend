@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const OrderStatus = {
+export const OrderItemStatus = {
   PENDING: 'pending',
   CONFIRMED: 'confirmed',
   SHIPPING: 'shipping',
@@ -8,7 +8,15 @@ export const OrderStatus = {
   COMPLETED: 'completed'
 };
 
-export const OrderStatusSchema = z.nativeEnum(OrderStatus);
+export const OrderStatus = {
+  ALL: 'all',
+  PENDING: 'pending',
+  PROCESSING: 'processing',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled'
+};
+
+export const OrderItemStatusSchema = z.nativeEnum(OrderItemStatus);
 
 export const OrderSchema = z
   .object({

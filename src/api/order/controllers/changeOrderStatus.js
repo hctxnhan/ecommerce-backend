@@ -4,14 +4,14 @@ import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
-import { OrderStatusSchema } from '../order.models.js';
+import { OrderItemStatusSchema } from '../order.models.js';
 import { updateProductOrderStatus } from '../order.services.js';
 
 async function handler(req, res) {
   const { userId: ownerId } = req.user;
   const { orderId, productId, status } = req.params;
 
-  const parsedStatus = OrderStatusSchema.parse(status);
+  const parsedStatus = OrderItemStatusSchema.parse(status);
 
   const result = await updateProductOrderStatus(
     orderId,

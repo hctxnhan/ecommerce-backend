@@ -8,4 +8,6 @@ export function toObjectId(id) {
   return new ObjectId(id);
 }
 
-export function foo() {}
+export function ISODateNow() {
+  return new Date(new Date().toISOString());
+}

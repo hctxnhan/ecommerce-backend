@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
-import { toObjectId } from '../../utils/index.js';
+import { ISODateNow, toObjectId } from '../../utils/index.js';
 import { reservationInventory } from '../inventory/inventory.services.js';
-import { OrderSchema, OrderStatus } from './order.models.js';
+import { OrderSchema, OrderItemStatus, OrderStatus } from './order.models.js';
 
 export async function createOrder(
   { customerId, shippingInfo, items, totalValue },
@@ -18,8 +18,8 @@ export async function createOrder(
   const createdOrder = await connect.ORDERS().insertOne(
     {
       ...order,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: ISODateNow(),
+      updatedAt: ISODateNow()
     },
     { session }
   );
@@ -27,7 +27,7 @@ export async function createOrder(
   const orderItems = items.map((item) => ({
     ...item,
     orderId: createdOrder.insertedId,
-    status: OrderStatus.PENDING
+    status: OrderItemStatus.PENDING
   }));
 
   await connect.ORDER_ITEMS().insertMany(orderItems, { session });
@@ -102,34 +102,156 @@ export async function placeOrder(userId, calculatedCart, deliveryAddress) {
 
 export function updatePrimaryDeliveryAddress(userId, address) {
   return connect.USERS().updateOne(
-    { _id: userId },
+    {
+      _id: new ObjectId(userId)
+    },
     {
       $set: {
-        primaryDeliveryAddress: address
+        address
       }
     }
   );
 }
 
-export function findMyOrders(userId, { page, limit }) {
+export function findMyOrders(userId, { page, limit, status }) {
   return connect
     .ORDERS()
-    .find({ customerId: userId })
-    .project({
-      _id: 1,
-      customerId: 1,
-      shippingInfo: 1,
-      totalValue: 1,
-      status: 1,
-      createdAt: 1
-    })
-    .skip((page - 1) * limit)
-    .limit(limit)
+    .aggregate([
+      {
+        $match: {
+          customerId: userId
+        }
+      },
+      // find order items and alias as "orderItems"
+      {
+        $lookup: {
+          from: 'orderItems',
+          localField: '_id',
+          foreignField: 'orderId',
+          as: 'orderItems'
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          customerId: 1,
+          shippingInfo: 1,
+          totalValue: 1,
+          status: {
+            $cond: {
+              // If size of orderItems that have "completed" status is equal to size of all orderItems
+              if: {
+                $eq: [
+                  {
+                    $size: {
+                      $filter: {
+                        input: '$orderItems',
+                        as: 'item',
+                        cond: {
+                          $eq: ['$$item.status', 'completed']
+                        }
+                      }
+                    }
+                  },
+                  {
+                    $size: '$orderItems'
+                  }
+                ]
+              },
+              then: 'completed',
+              else: {
+                $cond: {
+                  if: {
+                    $eq: [
+                      {
+                        $size: {
+                          $filter: {
+                            input: '$orderItems',
+                            as: 'item',
+                            cond: {
+                              $eq: ['$$item.status', 'processing']
+                            }
+                          }
+                        }
+                      },
+                      {
+                        $size: '$orderItems'
+                      }
+                    ]
+                  },
+                  then: 'processing',
+                  else: {
+                    $cond: {
+                      if: {
+                        $eq: [
+                          {
+                            $size: {
+                              $filter: {
+                                input: '$orderItems',
+                                as: 'item',
+                                cond: {
+                                  $eq: ['$$item.status', 'pending']
+                                }
+                              }
+                            }
+                          },
+                          {
+                            $size: '$orderItems'
+                          }
+                        ]
+                      },
+                      then: 'pending',
+                      else: 'cancelled'
+                    }
+                  }
+                }
+              }
+            }
+          },
+          createdAt: 1,
+          date: {
+            $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
+          }
+        }
+      },
+      {
+        $match: {
+          status: status === OrderStatus.ALL ? { $ne: 'cancelled' } : status
+        }
+      },
+      {
+        $group: {
+          _id: '$date',
+          orders: {
+            $push: {
+              _id: '$_id',
+              customerId: '$customerId',
+              shippingInfo: '$shippingInfo',
+              totalValue: '$totalValue',
+              status: '$status',
+              createdAt: '$createdAt'
+            }
+          }
+        }
+      },
+      {
+        $sort: { _id: -1 }
+      },
+      {
+        $skip: (page - 1) * limit
+      },
+      {
+        $limit: limit
+      }
+    ])
     .toArray();
 }
 
 export function findOrderById(orderId) {
-  return connect.ORDERS().find({ _id: new ObjectId(orderId) });
+  return connect
+    .ORDERS()
+    .find({ _id: new ObjectId(orderId) })
+    .toArray();
 }
 
 export function getOrderDetailById(orderId) {
@@ -153,7 +275,13 @@ export function getOrderDetailById(orderId) {
     .toArray();
 }
 
-export function updateProductOrderStatus(orderId, productId, ownerId, status, session) {
+export function updateProductOrderStatus(
+  orderId,
+  productId,
+  ownerId,
+  status,
+  session
+) {
   return connect.ORDER_ITEMS().updateOne(
     {
       orderId: toObjectId(orderId),
