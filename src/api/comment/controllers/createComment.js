@@ -8,11 +8,20 @@ import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import Comment from '../comment.models.js';
 
-const reqBodySchema = z.object({
-  content: z.string(),
-  productId: z.string(),
-  parentCommentId: z.string().optional()
-});
+const reqBodySchema = z
+  .object({
+    content: z.string(),
+    rating: z.number().int().min(1).max(5).optional(),
+    productId: z.string(),
+    parentCommentId: z.string().optional()
+  })
+  .refine((data) => {
+    if (data.rating && data.parentCommentId) {
+      return false;
+    }
+
+    return true;
+  }, 'Rating should not be a reply to another comment.');
 
 async function handler(req, res) {
   const result = await Comment.create({

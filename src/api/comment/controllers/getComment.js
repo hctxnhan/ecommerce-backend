@@ -24,7 +24,7 @@ async function handler(req, res) {
 
   return success({
     status: httpStatus.OK,
-    data: result
+    data: result.length ? result[0] : []
   }).send(res);
 }
 

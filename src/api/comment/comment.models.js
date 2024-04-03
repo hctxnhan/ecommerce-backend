@@ -3,12 +3,14 @@ import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
 import { findCommentById } from './comment.services.js';
 import { findProductById } from '../product/product.services.js';
+import { ISODateNow } from '../../utils/index.js';
 
 export default class Comment {
   static commentSchema = z.object({
     productId: z.string().transform((val) => new ObjectId(val)),
     userId: z.string().transform((val) => new ObjectId(val)),
     content: z.string(),
+    rating: z.number().int().min(1).max(5).optional(),
     parentCommentId: z
       .string()
       .optional()
@@ -27,9 +29,9 @@ export default class Comment {
       };
     }
 
-    const product = Comment.commentSchema.parse(data);
+    const comment = Comment.commentSchema.parse(data);
 
-    const { parentCommentId } = product;
+    const { parentCommentId } = comment;
 
     let commentLeft;
     let commentRight;
@@ -89,13 +91,22 @@ export default class Comment {
         }
       }
 
+      const user = await connect.USERS().findOne(
+        { _id: comment.userId },
+        {
+          projection: { _id: 1, name: 1 },
+          session
+        }
+      );
+
       const result = await connect.COMMENTS().insertOne(
         {
-          ...product,
+          ...comment,
+          user,
           commentLeft,
           commentRight,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          createdAt: ISODateNow(),
+          updatedAt: ISODateNow()
         },
         {
           session
