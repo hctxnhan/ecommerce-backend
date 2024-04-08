@@ -1,5 +1,4 @@
 import httpStatus from 'http-status';
-import { validatePaginationQuery } from '../../../middlewares/validateRequest.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
@@ -7,9 +6,9 @@ import { success } from '../../../utils/response.js';
 import { findUserById } from '../user.services.js';
 
 async function handler(req, res) {
-  const products = await findUserById(req.params.userId);
+  const user = await findUserById(req.params.userId);
 
-  if (!products) {
+  if (!user) {
     return success({
       status: httpStatus.NOT_FOUND,
       message: 'User not found'
@@ -18,7 +17,7 @@ async function handler(req, res) {
 
   return success({
     status: httpStatus.OK,
-    data: products
+    data: user
   }).send(res);
 }
 
@@ -26,7 +25,7 @@ const findUserByIdController = controllerFactory()
   .method(HttpMethod.GET)
   .path('/:userId')
   .handler(asyncHandler(handler))
-  .middlewares([validatePaginationQuery])
+  .middlewares([])
   .skipAuth();
 
 export default findUserByIdController;

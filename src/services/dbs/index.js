@@ -17,6 +17,7 @@ export const connect = {
   COMMENTS: () => client.db(dbName).collection('comments'),
   ORDER_ITEMS: () => client.db(dbName).collection('orderItems'),
   VERIFY_CODES: () => client.db(dbName).collection('verifyCodes'),
+  SHOP_REQUESTS: () => client.db(dbName).collection('shopRequests'),
   withSession: client.withSession.bind(client),
   startSession: client.startSession.bind(client)
 };

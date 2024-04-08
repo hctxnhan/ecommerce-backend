@@ -5,6 +5,7 @@ import getMyOrders from './controllers/getMyOrders.js';
 import getOrdersDetail from './controllers/getOrderDetail.js';
 import changeOrderStatus from './controllers/changeOrderStatus.js';
 import updateDeliveryAddress from './controllers/updateDeliveryAddress.js';
+import cancelOrder from './controllers/cancelOrder.js';
 
 const router = express.Router();
 
@@ -14,7 +15,8 @@ const controllers = [
   getMyOrders,
   getOrdersDetail,
   changeOrderStatus,
-  updateDeliveryAddress
+  updateDeliveryAddress,
+  cancelOrder
 ];
 
 controllers.forEach((controller) => {

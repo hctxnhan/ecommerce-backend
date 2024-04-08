@@ -27,6 +27,7 @@ export async function createOrder(
   const orderItems = items.map((item) => ({
     ...item,
     orderId: createdOrder.insertedId,
+    customerId: new ObjectId(customerId),
     status: OrderItemStatus.PENDING
   }));
 
@@ -294,5 +295,19 @@ export function updateProductOrderStatus(
       }
     },
     { session }
+  );
+}
+
+export function updateOrderStatus(orderId, customerId, status) {
+  return connect.ORDER_ITEMS().updateMany(
+    {
+      orderId: toObjectId(orderId),
+      customerId: toObjectId(customerId)
+    },
+    {
+      $set: {
+        status
+      }
+    }
   );
 }

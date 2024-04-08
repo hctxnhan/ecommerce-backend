@@ -7,6 +7,8 @@ import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import Comment from '../comment.models.js';
+import { roleCheck } from '../../../middlewares/roleCheck.js';
+import { Permission, Resource } from '../../rbac/index.js';
 
 const reqBodySchema = z
   .object({
@@ -46,6 +48,9 @@ const createComment = controllerFactory()
   .method(HttpMethod.POST)
   .path('/')
   .handler(asyncHandler(handler))
-  .middlewares([validateReqBody(reqBodySchema)]);
+  .middlewares([
+    validateReqBody(reqBodySchema),
+    roleCheck(Resource.COMMENT, Permission.CREATE_OWN)
+  ]);
 
 export default createComment;
