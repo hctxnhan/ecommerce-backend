@@ -1,15 +1,17 @@
 import httpStatus from 'http-status';
 import { z } from 'zod';
 import { roleCheck } from '../../../middlewares/roleCheck.js';
-import {
-  validateReqBody
-} from '../../../middlewares/validateRequest.js';
+import { validateReqBody } from '../../../middlewares/validateRequest.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { error, success } from '../../../utils/response.js';
 import { Permission, Resource, UserRole } from '../../rbac/index.js';
-import { createShopRequest, findUserById } from '../user.services.js';
+import {
+  createShopRequest,
+  findUserById,
+  getShopRequests
+} from '../user.services.js';
 
 const reqBodySchema = z.object({
   shopDescription: z.string(),
@@ -18,7 +20,7 @@ const reqBodySchema = z.object({
 });
 
 async function handler(req, res) {
-  const user = await findUserById(req.params.userId);
+  const user = await findUserById(req.user.userId);
 
   if (!user) {
     return success({
@@ -36,8 +38,20 @@ async function handler(req, res) {
 
   const { shopDescription, shopName, shopAddress } = req.body;
 
+  const previousRequest = await getShopRequests({
+    userId: req.user.userId,
+    status: 'pending'
+  });
+
+  if (previousRequest.length > 0) {
+    return error({
+      status: httpStatus.BAD_REQUEST,
+      message: `You already have a pending request to register as a shop owner. Request ID: ${previousRequest[0]._id}`
+    }).send(res);
+  }
+
   await createShopRequest({
-    userId: req.params.userId,
+    userId: req.user.userId,
     shopName,
     shopDescription,
     shopAddress
@@ -53,7 +67,7 @@ async function handler(req, res) {
 
 const registerAsShop = controllerFactory()
   .method(HttpMethod.POST)
-  .path('/:userId/shopRegistration')
+  .path('/shopRegistration')
   .handler(asyncHandler(handler))
   .middlewares([
     validateReqBody(reqBodySchema),

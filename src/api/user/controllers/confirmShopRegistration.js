@@ -48,8 +48,8 @@ async function handler(req, res) {
 }
 
 const confirmShopRegistration = controllerFactory()
-  .method(HttpMethod.PUT)
-  .path('/:userId/shopRegistration/:requestId/:status')
+  .method(HttpMethod.POST)
+  .path('/admin/shopRequests/:requestId/:status')
   .handler(asyncHandler(handler))
   .middlewares([roleCheck(Resource.SHOP_REQUEST, Permission.UPDATE_ANY)]);
 

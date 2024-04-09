@@ -1,6 +1,6 @@
-import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
 import { UserRole } from '../rbac/index.js';
+import { ISODateNow, toObjectId } from '../../utils/index.js';
 
 export function findUserByEmail(email) {
   return connect.USERS().findOne({
@@ -12,7 +12,7 @@ export function findUserByEmail(email) {
 
 export function findUserById(userId) {
   return connect.USERS().findOne(
-    { _id: new ObjectId(userId) },
+    { _id: toObjectId(userId) },
     {
       projection: {
         password: 0
@@ -24,7 +24,8 @@ export function findUserById(userId) {
 export const SHOP_REQUEST_STATUS = {
   PENDING: 'pending',
   APPROVED: 'approved',
-  REJECTED: 'rejected'
+  REJECTED: 'rejected',
+  ALL: 'all'
 };
 
 export const USER_STATUS = {
@@ -40,11 +41,12 @@ export function createShopRequest({
   shopAddress
 }) {
   return connect.SHOP_REQUESTS().insertOne({
-    userId: new ObjectId(userId),
+    userId: toObjectId(userId),
     shopName,
     shopDescription,
     shopAddress,
-    status: SHOP_REQUEST_STATUS.PENDING
+    status: SHOP_REQUEST_STATUS.PENDING,
+    createdAt: ISODateNow()
   });
 }
 
@@ -53,7 +55,7 @@ export async function confirmShopRequest(requestId) {
     session.withTransaction(async (session) => {
       const request = await connect
         .SHOP_REQUESTS()
-        .findOne({ _id: new ObjectId(requestId) }, { session });
+        .findOne({ _id: toObjectId(requestId) }, { session });
 
       if (!request) {
         return {
@@ -87,7 +89,7 @@ export async function confirmShopRequest(requestId) {
       await connect
         .SHOP_REQUESTS()
         .updateOne(
-          { _id: new ObjectId(requestId) },
+          { _id: toObjectId(requestId) },
           { $set: { status: SHOP_REQUEST_STATUS.APPROVED } },
           { session }
         );
@@ -102,7 +104,7 @@ export async function confirmShopRequest(requestId) {
 }
 
 export async function rejectShopRequest(requestId) {
-  const filter = { _id: new ObjectId(requestId) };
+  const filter = { _id: toObjectId(requestId) };
 
   const request = await connect.SHOP_REQUESTS().findOne(filter);
 
@@ -136,11 +138,24 @@ export function updateUser(filter, update) {
 export function getShopRequests({
   status = SHOP_REQUEST_STATUS.PENDING,
   page = 1,
-  limit = 10
+  limit = 10,
+  userId
 }) {
+  const query = {};
+
+  if (status !== SHOP_REQUEST_STATUS.ALL) {
+    query.status = status;
+  }
+
+  if (userId) {
+    query.userId = toObjectId(userId);
+  }
+
+  console.log(query)
+
   return connect
     .SHOP_REQUESTS()
-    .find({ status })
+    .find(query)
     .skip((page - 1) * limit)
     .limit(limit)
     .toArray();

@@ -1,12 +1,13 @@
 import Email from 'email-templates';
 import configs from '../../configs/index.js';
+import { config } from 'dotenv';
 
 const email = new Email({
   message: {
     from: configs.mailTransfer.auth.user
   },
   transport: {
-    service: 'gmail',
+    service: configs.mailTransfer.service,
     auth: {
       user: configs.mailTransfer.auth.user,
       pass: configs.mailTransfer.auth.password

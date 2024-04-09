@@ -14,15 +14,15 @@ POST http://localhost:3000/auth/verify-signup?code=205179&email=thanhnhanstudy@g
 
 
 ### Resend verify code
-POST http://localhost:3000/auth/resend-verify-code?email=thanhnhanstudy@gmail.com&purpose=RESET_PASSWORD
+POST http://localhost:3000/auth/resend-verify-code?email=hctxnhan@gmail.com&purpose=RESET_PASSWORD
 
 ### Reset password
 POST http://localhost:3000/auth/reset-password
 Content-Type: application/json
 
 {
-    "email": "thanhnhanstudy@gmail.com",
-    "code": "235982",
+    "email": "hctxnhan@gmail.com",
+    "code": "193477",
     "password": "thanhnhan"
 }
 
