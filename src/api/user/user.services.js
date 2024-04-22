@@ -151,8 +151,6 @@ export function getShopRequests({
     query.userId = toObjectId(userId);
   }
 
-  console.log(query)
-
   return connect
     .SHOP_REQUESTS()
     .find(query)

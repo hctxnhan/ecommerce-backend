@@ -3,14 +3,14 @@ POST http://localhost:3000/auth/sign-up
 Content-Type: application/json
 
 {
-    "email": "thanhnhanstudy@gmail.com",
+    "email": "20110687@student.hcmute.edu.vn",
     "name": "Thanh Nhan",
     "password": "12345678",
     "confirmPassword": "12345678"
 }
 
 ### Verify sign up
-POST http://localhost:3000/auth/verify-signup?code=205179&email=thanhnhanstudy@gmail.com
+POST http://localhost:3000/auth/verify-signup?code=784699&email=20110687@student.hcmute.edu.vn
 
 
 ### Resend verify code

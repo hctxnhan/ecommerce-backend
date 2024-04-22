@@ -18,8 +18,6 @@ async function handler(req, res) {
     OrderItemStatus.CANCELLED
   );
 
-  console.log('result', result, orderId, customerId);
-  
   if (result.matchedCount === 0) {
     throw createHttpError.Forbidden(
       'There are no orders with the given order id or order does not contain the product, or you are not the owner of the product!'

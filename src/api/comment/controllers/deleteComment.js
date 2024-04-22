@@ -5,6 +5,8 @@ import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import { deleteComment } from '../comment.services.js';
+import { roleCheck } from '../../../middlewares/roleCheck.js';
+import { Permission, Resource } from '../../rbac/index.js';
 
 async function handler(req, res) {
   const result = await deleteComment(req.params.commentId);
@@ -23,6 +25,6 @@ const deleteCommentController = controllerFactory()
   .method(HttpMethod.DELETE)
   .path('/:commentId')
   .handler(asyncHandler(handler))
-  .middlewares([]);
+  .middlewares([roleCheck(Resource.COMMENT, Permission.DELETE_OWN)]);
 
 export default deleteCommentController;

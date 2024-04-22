@@ -22,7 +22,8 @@ export const roleCheck = (resource, action) => {
       next();
     } else {
       res.status(403).json({
-        message: "You don't have permission to perform this action."
+        message: "You don't have permission to perform this action.",
+        error: `Required permission: ${user.role} ${action} on ${resource}`
       });
     }
   };

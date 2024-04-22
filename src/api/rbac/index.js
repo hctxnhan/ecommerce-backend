@@ -85,10 +85,7 @@ let grantsObject = {
       [Permission.DELETE_OWN]: ['*']
     },
     [Resource.COMMENT]: {
-      [Permission.CREATE_OWN]: ['*'],
-      [Permission.READ_ANY]: ['*'],
-      [Permission.UPDATE_OWN]: ['*'],
-      [Permission.DELETE_OWN]: ['*']
+      [Permission.READ_ANY]: ['*']
     },
     [Resource.DISCOUNT]: {
       [Permission.READ_ANY]: ['*'],

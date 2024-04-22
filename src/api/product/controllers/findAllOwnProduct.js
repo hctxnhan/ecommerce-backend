@@ -16,10 +16,13 @@ const QuerySchema = z.object({
 });
 
 async function handler(req, res) {
-  const { status } = req.query;
+  const { status, page, limit } = req.query;
+
   const result = await findProducts({
     isPublished: status === 'published',
-    owner: new ObjectId(req.user.userId)
+    owner: new ObjectId(req.user.userId),
+    // page,
+    // limit
   }).toArray();
 
   return success({

@@ -311,3 +311,53 @@ export function updateOrderStatus(orderId, customerId, status) {
     }
   );
 }
+
+export function getOrderItemByShopId(shopId) {
+  return connect
+    .ORDER_ITEMS()
+    .aggregate([
+      {
+        $match: {
+          ownerId: toObjectId(shopId)
+        }
+      },
+      {
+        $lookup: {
+          from: 'orders',
+          localField: 'orderId',
+          foreignField: '_id',
+          as: 'order'
+        }
+      },
+      {
+        $unwind: '$order'
+      },
+      {
+        $project: {
+          _id: 1,
+          price: 1,
+          totalPriceAfterDiscount: 1,
+          orderId: 1,
+          name: 1,
+          attributes: 1,
+          customerId: 1,
+          productId: 1,
+          quantity: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          order: {
+            customerId: '$order.customerId',
+            shippingInfo: '$order.shippingInfo',
+            status: '$order.status',
+            createdAt: '$order.createdAt',
+            updatedAt: '$order.updatedAt'
+          }
+        }
+      },
+      {
+        $sort: { 'order.createdAt': -1 }
+      }
+    ])
+    .toArray();
+}
