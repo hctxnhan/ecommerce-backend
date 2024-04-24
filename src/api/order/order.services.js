@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
 import { ISODateNow, toObjectId } from '../../utils/index.js';
 import { reservationInventory } from '../inventory/inventory.services.js';
-import { OrderSchema, OrderItemStatus, OrderStatus } from './order.models.js';
+import { OrderItemStatus, OrderSchema, OrderStatus } from './order.models.js';
 
 export async function createOrder(
   { customerId, shippingInfo, items, totalValue },
@@ -277,16 +277,13 @@ export function getOrderDetailById(orderId) {
 }
 
 export function updateProductOrderStatus(
-  orderId,
-  productId,
-  ownerId,
-  status,
+  { itemId, ownerId },
+  { status },
   session
 ) {
   return connect.ORDER_ITEMS().updateOne(
     {
-      orderId: toObjectId(orderId),
-      productId: toObjectId(productId),
+      _id: toObjectId(itemId),
       ownerId: toObjectId(ownerId)
     },
     {
@@ -312,13 +309,32 @@ export function updateOrderStatus(orderId, customerId, status) {
   );
 }
 
-export function getOrderItemByShopId(shopId) {
+export function getOrderItemByShopId({ shopId, status, page, limit }) {
+  return connect
+    .ORDER_ITEMS()
+    .find(
+      {
+        ownerId: toObjectId(shopId),
+        status:
+          status === OrderItemStatus.ALL
+            ? { $ne: OrderItemStatus.CANCELLED }
+            : status
+      },
+      {
+        limit,
+        skip: (page - 1) * limit
+      }
+    )
+    .toArray();
+}
+
+export function getOrderItem({ itemId }) {
   return connect
     .ORDER_ITEMS()
     .aggregate([
       {
         $match: {
-          ownerId: toObjectId(shopId)
+          _id: new ObjectId(itemId)
         }
       },
       {
@@ -335,28 +351,20 @@ export function getOrderItemByShopId(shopId) {
       {
         $project: {
           _id: 1,
-          price: 1,
-          totalPriceAfterDiscount: 1,
           orderId: 1,
-          name: 1,
-          attributes: 1,
           customerId: 1,
           productId: 1,
-          quantity: 1,
           status: 1,
+          ownerId: 1,
           createdAt: 1,
           updatedAt: 1,
           order: {
             customerId: '$order.customerId',
             shippingInfo: '$order.shippingInfo',
-            status: '$order.status',
             createdAt: '$order.createdAt',
             updatedAt: '$order.updatedAt'
           }
         }
-      },
-      {
-        $sort: { 'order.createdAt': -1 }
       }
     ])
     .toArray();

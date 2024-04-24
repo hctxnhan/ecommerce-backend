@@ -1,16 +1,15 @@
 import httpStatus from 'http-status';
+import createHttpError from 'http-errors';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import { OrderItemStatus } from '../order.models.js';
 import { updateOrderStatus } from '../order.services.js';
-import createHttpError from 'http-errors';
 
 async function handler(req, res) {
   const { userId: customerId } = req.user;
   const { orderId } = req.params;
-
 
   const result = await updateOrderStatus(
     orderId,

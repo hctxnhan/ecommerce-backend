@@ -1,5 +1,9 @@
 import httpStatus from 'http-status';
-import { validatePaginationQuery, validateReqQuery } from '../../../middlewares/validateRequest.js';
+import { z } from 'zod';
+import {
+  validatePaginationQuery,
+  validateReqQuery
+} from '../../../middlewares/validateRequest.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
@@ -7,7 +11,6 @@ import { success } from '../../../utils/response.js';
 import { roleCheck } from '../../../middlewares/roleCheck.js';
 import { Permission, Resource } from '../../rbac/index.js';
 import { SHOP_REQUEST_STATUS, getShopRequests } from '../user.services.js';
-import { z } from 'zod';
 
 const reqQuerySchema = z.object({
   status: z

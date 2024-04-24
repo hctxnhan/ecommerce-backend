@@ -2,9 +2,7 @@ import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { z } from 'zod';
 import configs from '../../../configs/index.js';
-import {
-  validateReqBody
-} from '../../../middlewares/validateRequest.js';
+import { validateReqBody } from '../../../middlewares/validateRequest.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';

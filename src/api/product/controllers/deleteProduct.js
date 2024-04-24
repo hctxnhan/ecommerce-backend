@@ -1,12 +1,11 @@
 import httpStatus from 'http-status';
-import { ObjectId } from 'mongodb';
+import { roleCheck } from '../../../middlewares/roleCheck.js';
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
-import { doesUserOwnProduct, updateProductById } from '../product.services.js';
-import { roleCheck } from '../../../middlewares/roleCheck.js';
 import { Permission, Resource } from '../../rbac/index.js';
+import { deleteProductById, doesUserOwnProduct } from '../product.services.js';
 
 async function handler(req, res) {
   const { productId } = req.params;
@@ -19,23 +18,18 @@ async function handler(req, res) {
     }).send(res);
   }
 
-  await updateProductById(productId, {
-    isPublished: true
-  });
+  await deleteProductById(productId);
 
   return success({
-    message: 'Product published successfully',
-    status: httpStatus.OK,
-    data: {
-      productId: new ObjectId(productId)
-    }
+    message: 'Product deleted successfully',
+    status: httpStatus.OK
   }).send(res);
 }
 
-const publishProduct = controllerFactory()
-  .method(HttpMethod.PUT)
-  .path('/:productId/publish')
+const deleteProduct = controllerFactory()
+  .method(HttpMethod.DELETE)
+  .path('/:productId')
   .handler(asyncHandler(handler))
-  .middlewares([roleCheck(Resource.PRODUCT, Permission.UPDATE_OWN)]);
+  .middlewares([roleCheck(Resource.PRODUCT, Permission.DELETE_OWN)]);
 
-export default publishProduct;
+export default deleteProduct;

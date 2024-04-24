@@ -6,18 +6,18 @@ import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import { OrderItemStatusSchema } from '../order.models.js';
 import { updateProductOrderStatus } from '../order.services.js';
+import { roleCheck } from '../../../middlewares/roleCheck.js';
+import { Permission, Resource } from '../../rbac/index.js';
 
 async function handler(req, res) {
   const { userId: ownerId } = req.user;
-  const { orderId, productId, status } = req.params;
+  const { itemId, status } = req.params;
 
   const parsedStatus = OrderItemStatusSchema.parse(status);
 
   const result = await updateProductOrderStatus(
-    orderId,
-    productId,
-    ownerId,
-    status
+    { itemId, ownerId },
+    { status }
   );
 
   if (result.matchedCount === 0) {
@@ -33,9 +33,9 @@ async function handler(req, res) {
 }
 
 const changeOrderStatus = controllerFactory()
-  .method(HttpMethod.POST)
-  .path('/:orderId/:productId/:status')
+  .method(HttpMethod.PUT)
+  .path('/order-items/:itemId/:status')
   .handler(asyncHandler(handler))
-  .middlewares([]);
+  .middlewares([roleCheck(Resource.ORDER_ITEM, Permission.UPDATE_OWN)]);
 
 export default changeOrderStatus;

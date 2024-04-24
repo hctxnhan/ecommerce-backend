@@ -51,8 +51,8 @@ export function createShopRequest({
 }
 
 export async function confirmShopRequest(requestId) {
-  let res = await connect.withSession(async (session) =>
-    session.withTransaction(async (session) => {
+  const res = await connect.withSession(async (session) =>
+    session.withTransaction(async () => {
       const request = await connect
         .SHOP_REQUESTS()
         .findOne({ _id: toObjectId(requestId) }, { session });

@@ -1,12 +1,12 @@
-import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
+import { toObjectId } from '../../utils/index.js';
 import { findProductById } from '../product/product.services.js';
 import { DiscountApplyType, DiscountType } from './discount.models.js';
 
 export async function createDiscount(ownerId, data) {
   return connect.DISCOUNTS().insertOne({
     ...data,
-    owner: new ObjectId(ownerId),
+    owner: toObjectId(ownerId),
     usedBy: [],
     usedCount: 0
   });
@@ -32,7 +32,7 @@ export function findAllDiscounts(ownerId, { page = 1, limit = 10 } = {}) {
   return connect
     .DISCOUNTS()
     .find({
-      owner: new ObjectId(ownerId),
+      owner: toObjectId(ownerId),
       endDate: {
         $gte: new Date().toISOString()
       }
@@ -47,7 +47,7 @@ export function isOwnerOfDiscount(discountCode, ownerId) {
     .DISCOUNTS()
     .findOne({
       code: discountCode,
-      owner: new ObjectId(ownerId)
+      owner: toObjectId(ownerId)
     })
     .then((discount) => !!discount);
 }

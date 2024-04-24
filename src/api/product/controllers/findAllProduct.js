@@ -25,18 +25,15 @@ async function handler(req, res) {
     type: type === 'all' ? { $ne: 'all' } : type
   };
 
-  if(shopId) {
+  if (shopId) {
     searchFilter.owner = toObjectId(shopId);
   }
 
-  const result = await findProducts(
-    searchFilter,
-    {
-      search,
-      page,
-      limit
-    }
-  ).toArray();
+  const result = await findProducts(searchFilter, {
+    search,
+    page,
+    limit
+  }).toArray();
 
   return success({
     status: httpStatus.OK,

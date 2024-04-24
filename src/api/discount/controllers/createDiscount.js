@@ -7,6 +7,8 @@ import { HttpMethod } from '../../../utils/enum/index.js';
 import { success } from '../../../utils/response.js';
 import { DiscountSchema } from '../discount.models.js';
 import { createDiscount, findDiscountByCode } from '../discount.services.js';
+import { roleCheck } from '../../../middlewares/roleCheck.js';
+import { Permission, Resource } from '../../rbac/index.js';
 
 async function handler(req, res) {
   const existingDiscount = await findDiscountByCode(req.body.code);
@@ -33,6 +35,9 @@ const createDiscountController = controllerFactory()
   .method(HttpMethod.POST)
   .path('/')
   .handler(asyncHandler(handler))
-  .middlewares([validateReqBody(DiscountSchema)]);
+  .middlewares([
+    roleCheck(Resource.DISCOUNT, Permission.CREATE_OWN),
+    validateReqBody(DiscountSchema)
+  ]);
 
 export default createDiscountController;

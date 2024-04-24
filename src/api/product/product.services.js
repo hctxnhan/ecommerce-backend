@@ -1,6 +1,6 @@
-import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
 import { SortDirection } from '../../utils/enum/index.js';
+import { toObjectId } from '../../utils/index.js';
 
 export function findProducts(
   options,
@@ -23,7 +23,7 @@ export function findProducts(
         $search: {
           search: {
             query: search,
-            path: ['name', 'description'],
+            path: ['name', 'description']
           }
         }
       }
@@ -55,6 +55,7 @@ export function findProducts(
           avgRating: 1,
           slug: 1,
           type: 1,
+          attributes: 1,
           owner: {
             $arrayElemAt: ['$owner', 0]
           },
@@ -92,7 +93,7 @@ export function findProductById(id) {
   const pipeline = [
     {
       $match: {
-        _id: new ObjectId(id),
+        _id: toObjectId(id),
         isPublished: true
       }
     },
@@ -136,8 +137,8 @@ export function findProductById(id) {
 
 export function doesUserOwnProduct(userId, productId) {
   return connect.PRODUCTS().findOne({
-    _id: new ObjectId(productId),
-    owner: new ObjectId(userId)
+    _id: toObjectId(productId),
+    owner: toObjectId(userId)
   });
 }
 
@@ -145,8 +146,12 @@ export function updateProductById(id, update) {
   return connect
     .PRODUCTS()
     .findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: toObjectId(id) },
       { $set: update },
       { returnOriginal: false }
     );
+}
+
+export function deleteProductById(id) {
+  return connect.PRODUCTS().deleteOne({ _id: toObjectId(id) });
 }

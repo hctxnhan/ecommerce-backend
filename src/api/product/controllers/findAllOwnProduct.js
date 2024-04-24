@@ -1,5 +1,4 @@
 import httpStatus from 'http-status';
-import { ObjectId } from 'mongodb';
 import { z } from 'zod';
 import {
   validatePaginationQuery,
@@ -8,21 +7,24 @@ import {
 import asyncHandler from '../../../utils/asyncHandler.js';
 import controllerFactory from '../../../utils/controllerFactory.js';
 import { HttpMethod } from '../../../utils/enum/index.js';
+import { toObjectId } from '../../../utils/index.js';
 import { success } from '../../../utils/response.js';
 import { findProducts } from '../product.services.js';
 
 const QuerySchema = z.object({
-  status: z.enum(['published', 'draft']).default('published')
+  status: z.enum(['published', 'draft']).default('published'),
+  search: z.string().optional()
 });
 
 async function handler(req, res) {
-  const { status, page, limit } = req.query;
+  const { status, page, limit, search } = req.query;
 
   const result = await findProducts({
     isPublished: status === 'published',
-    owner: new ObjectId(req.user.userId),
-    // page,
-    // limit
+    owner: toObjectId(req.user.userId),
+    search,
+    page,
+    limit
   }).toArray();
 
   return success({

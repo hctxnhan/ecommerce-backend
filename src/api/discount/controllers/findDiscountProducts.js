@@ -7,7 +7,10 @@ import { findAllDiscountProducts } from '../discount.services.js';
 import { validatePaginationQuery } from '../../../middlewares/validateRequest.js';
 
 async function handler(req, res) {
-  const products = await findAllDiscountProducts(req.params.discountId, req.query);
+  const products = await findAllDiscountProducts(
+    req.params.discountId,
+    req.query
+  );
 
   return success({
     status: httpStatus.OK,

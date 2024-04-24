@@ -16,6 +16,7 @@ const Resource = {
   COMMENT: 'comment',
   DISCOUNT: 'discount',
   ORDER: 'order',
+  ORDER_ITEM: 'orderItem',
   INVENTORY: 'inventory',
   PRODUCT: 'product',
   USER: 'user',
@@ -33,7 +34,7 @@ const Permission = {
   DELETE_OWN: 'delete:own'
 };
 
-let grantsObject = {
+const grantsObject = {
   [UserRole.USER]: {
     [Resource.USER]: {
       [Permission.READ_OWN]: ['*'],
@@ -108,6 +109,10 @@ let grantsObject = {
       [Permission.CREATE_OWN]: ['*'],
       [Permission.UPDATE_OWN]: ['*', '!ownerId', '!rating'],
       [Permission.DELETE_OWN]: ['*']
+    },
+    [Resource.ORDER_ITEM]: {
+      [Permission.READ_OWN]: ['*'],
+      [Permission.UPDATE_OWN]: ['*']
     }
   },
   [UserRole.ADMIN]: {

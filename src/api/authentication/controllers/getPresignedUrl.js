@@ -6,12 +6,13 @@ import { success } from '../../../utils/response.js';
 // import { createPresignedUrl } from '../../../services/aws/s3.js';
 
 async function handler(req, res) {
-  const { userId } = req.user;
+  // const { userId } = req.user;
 
-  const url = await createPresignedUrl(
-    `user-avatars/avatar-${userId}.jpg`,
-    'putObject'
-  );
+  const url = '';
+  // const url = await createPresignedUrl(
+  //   `user-avatars/avatar-${userId}.jpg`,
+  //   'putObject'
+  // );
 
   return success({
     status: httpStatus.OK,

@@ -1,6 +1,6 @@
 import Email from 'email-templates';
-import configs from '../../configs/index.js';
 import { config } from 'dotenv';
+import configs from '../../configs/index.js';
 
 const email = new Email({
   message: {
@@ -32,7 +32,7 @@ export default async function sendMail({ to, template, locals }) {
       },
       locals
     })
-    .catch(console.error);
+    .catch(() => {});
 }
 
 export const Mail = {

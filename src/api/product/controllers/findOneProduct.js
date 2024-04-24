@@ -9,7 +9,6 @@ async function handler(req, res) {
   const { productId } = req.params;
   const result = await findProductById(productId);
 
-
   if (!result) {
     return error({
       message: 'Product not found',

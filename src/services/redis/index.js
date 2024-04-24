@@ -2,7 +2,10 @@ import { createClient } from 'redis';
 
 const client = createClient();
 client.on('error', (err) => console.log('Redis Client Error', err));
-await client.connect();
+
+export async function initializeRedis() {
+  await client.connect();
+}
 
 export function releaseLock(lockKey) {
   return client.del(lockKey);

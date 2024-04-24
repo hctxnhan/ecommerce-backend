@@ -14,7 +14,7 @@ export default function controllerFactory() {
               return {
                 middlewares(middlewares) {
                   controller.middlewares = [validateToken, ...middlewares];
-                  controller.skipAuth = function () {
+                  controller.skipAuth = () => {
                     controller.middlewares = middlewares;
                     return controller;
                   };

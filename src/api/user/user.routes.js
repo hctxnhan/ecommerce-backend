@@ -14,7 +14,7 @@ const controllers = [
   getAllShopRequest,
   findAllDiscountOfUser,
   findUserByIdController,
-  registerAsShop,
+  registerAsShop
 ];
 
 controllers.forEach((controller) => {

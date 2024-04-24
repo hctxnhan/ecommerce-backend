@@ -1,5 +1,5 @@
-import { RBAC, Permission, Resource, UserRole } from '../api/rbac/index.js';
 import { z } from 'zod';
+import { Permission, RBAC, Resource } from '../api/rbac/index.js';
 
 const Schema = z.object({
   resource: z.enum(Object.values(Resource)),
@@ -10,8 +10,8 @@ export const roleCheck = (resource, action) => {
   Schema.parse({ resource, action });
 
   return async (req, res, next) => {
-    const user = req.user;
-    
+    const { user } = req;
+
     const permission = await RBAC.permission({
       role: user.role,
       resource,
