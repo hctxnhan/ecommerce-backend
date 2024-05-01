@@ -13,19 +13,23 @@ import { findProducts } from '../product.services.js';
 
 const QuerySchema = z.object({
   status: z.enum(['published', 'draft']).default('published'),
-  search: z.string().optional()
+  search: z.string().optional().default('')
 });
 
 async function handler(req, res) {
   const { status, page, limit, search } = req.query;
 
-  const result = await findProducts({
-    isPublished: status === 'published',
-    owner: toObjectId(req.user.userId),
-    search,
-    page,
-    limit
-  }).toArray();
+  const result = await findProducts(
+    {
+      isPublished: status === 'published',
+      owner: toObjectId(req.user.userId)
+    },
+    {
+      search,
+      page,
+      limit
+    }
+  ).toArray();
 
   return success({
     status: httpStatus.OK,

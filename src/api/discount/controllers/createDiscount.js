@@ -19,7 +19,7 @@ async function handler(req, res) {
     );
   }
 
-  const result = await createDiscount(req.user.id, req.body);
+  const result = await createDiscount(req.user.userId, req.body);
 
   return success({
     message: 'Discount has been created successfully!',

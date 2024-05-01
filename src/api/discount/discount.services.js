@@ -1,5 +1,5 @@
 import { connect } from '../../services/dbs/index.js';
-import { toObjectId } from '../../utils/index.js';
+import { ISODateNow, toObjectId } from '../../utils/index.js';
 import { findProductById } from '../product/product.services.js';
 import { DiscountApplyType, DiscountType } from './discount.models.js';
 
@@ -28,14 +28,46 @@ export function getDiscounts(discountCodes, includeExpired = false) {
   return connect.DISCOUNTS().find(query).toArray();
 }
 
-export function findAllDiscounts(ownerId, { page = 1, limit = 10 } = {}) {
+export function checkIfDiscountOwner(discountCode, ownerId) {
+  return connect.DISCOUNTS().findOne({
+    code: discountCode,
+    owner: toObjectId(ownerId)
+  });
+}
+
+export function updateDiscountStatus(discountCode, status) {
+  return connect.DISCOUNTS().updateOne(
+    {
+      code: discountCode
+    },
+    {
+      $set: {
+        status
+      }
+    }
+  );
+}
+
+export function findAllDiscounts(
+  { ownerId, status = 'active' },
+  { page = 1, limit = 10 } = {}
+) {
+  const currentDate = new Date().toISOString();
+  const endDate =
+    status === 'expired'
+      ? { $lt: currentDate }
+      : {
+          $gte: currentDate
+        };
+
+  // console.log(toObjectId(ownerId), endDate, !(status === 'inactive'));
+
   return connect
     .DISCOUNTS()
     .find({
       owner: toObjectId(ownerId),
-      endDate: {
-        $gte: new Date().toISOString()
-      }
+      endDate,
+      isActive: !(status === 'inactive')
     })
     .limit(limit)
     .skip((page - 1) * limit)
@@ -54,10 +86,7 @@ export function isOwnerOfDiscount(discountCode, ownerId) {
 
 export function findDiscountByCode(code) {
   return connect.DISCOUNTS().findOne({
-    code,
-    endDate: {
-      $gte: new Date().toISOString()
-    }
+    code
   });
 }
 
