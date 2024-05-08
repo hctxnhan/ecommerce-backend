@@ -10,7 +10,6 @@ export function validateReqBody(schema) {
       req.body = reqBody;
       next();
     } catch (error) {
-      console.log(JSON.stringify(error, null, 2));
       next(error);
     }
   };

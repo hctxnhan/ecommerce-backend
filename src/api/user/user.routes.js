@@ -5,6 +5,7 @@ import registerAsShop from './controllers/registerAsShop.js';
 import findShopRequest from './controllers/findShopRequest.js';
 import getAllShopRequest from './controllers/findAllShopRequest.js';
 import confirmShopRegistration from './controllers/confirmShopRegistration.js';
+import updateProfileController from './controllers/updateProfile.js';
 
 const router = express.Router();
 
@@ -14,7 +15,8 @@ const controllers = [
   getAllShopRequest,
   findAllDiscountOfUser,
   findUserByIdController,
-  registerAsShop
+  registerAsShop,
+  updateProfileController
 ];
 
 controllers.forEach((controller) => {

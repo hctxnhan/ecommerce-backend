@@ -15,6 +15,7 @@ const reqBodySchema = z
     content: z.string(),
     rating: z.number().int().min(1).max(5).optional(),
     productId: z.string(),
+    orderItemId: z.string().optional(),
     parentCommentId: z.string().optional()
   })
   .refine((data) => {

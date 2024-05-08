@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
+import { toObjectId } from '../../utils/index.js';
 
 export function findCommentById(commentId) {
   return connect.COMMENTS().findOne({ _id: new ObjectId(commentId) });
@@ -139,4 +140,16 @@ export async function deleteComment(commentId) {
   } finally {
     session.endSession();
   }
+}
+
+export async function hasRating(orderItemId, userId) {
+  const res = await connect.COMMENTS().findOne({
+    orderItemId: toObjectId(orderItemId),
+    userId: toObjectId(userId)
+  }) !== null;
+
+  console.log('res', res);
+  
+
+  return res;
 }

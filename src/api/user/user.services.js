@@ -173,3 +173,9 @@ export function getUsers({
     .limit(limit)
     .toArray();
 }
+
+export function updateProfile(userId, update) {
+  return connect
+    .USERS()
+    .updateOne({ _id: toObjectId(userId) }, { $set: update });
+}

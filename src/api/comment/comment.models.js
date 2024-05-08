@@ -1,22 +1,29 @@
 import z from 'zod';
 import { ObjectId } from 'mongodb';
 import { connect } from '../../services/dbs/index.js';
-import { findCommentById } from './comment.services.js';
+import { findCommentById, hasRating } from './comment.services.js';
 import { findProductById } from '../product/product.services.js';
-import { ISODateNow } from '../../utils/index.js';
+import { ISODateNow, toObjectId } from '../../utils/index.js';
+import { getOrderItem } from '../order/order.services.js';
 
 export default class Comment {
-  static commentSchema = z.object({
-    productId: z.string().transform((val) => new ObjectId(val)),
-    userId: z.string().transform((val) => new ObjectId(val)),
-    content: z.string(),
-    rating: z.number().int().min(1).max(5).optional(),
-    parentCommentId: z
-      .string()
-      .optional()
-      .transform((val) => (val ? new ObjectId(val) : null)),
-    isDeleted: z.boolean().default(false)
-  });
+  static commentSchema = z
+    .object({
+      productId: z.string().transform((val) => new ObjectId(val)),
+      orderItemId: z.string().optional(),
+      userId: z.string().transform((val) => new ObjectId(val)),
+      content: z.string(),
+      rating: z.number().int().min(1).max(5).optional(),
+      parentCommentId: z
+        .string()
+        .optional()
+        .transform((val) => (val ? new ObjectId(val) : null)),
+      isDeleted: z.boolean().default(false)
+    })
+    .refine((data) => !(data.rating && data.parentCommentId), {
+      message: 'Rating should not be a reply to another comment.',
+      path: ['rating']
+    });
 
   static async create(data) {
     const commentProduct = await findProductById(data.productId);
@@ -27,6 +34,26 @@ export default class Comment {
         reason: 'PRODUCT_NOT_FOUND',
         message: 'Product not found'
       };
+    }
+    const alreadyCommented = await hasRating(data.orderItemId, data.userId);
+    if (alreadyCommented) {
+      return {
+        success: false,
+        reason: 'ALREADY_COMMENTED',
+        message: 'You have already rate this product'
+      };
+    }
+
+    if (data.orderItemId) {
+      const orderItem = await getOrderItem(data.orderItemId);
+      if (!orderItem) {
+        return {
+          success: false,
+          reason: 'ORDER_ITEM_NOT_FOUND',
+          message:
+            'You must not rate a comment on a product that you have not purchased'
+        };
+      }
     }
 
     const comment = Comment.commentSchema.parse(data);
@@ -102,7 +129,11 @@ export default class Comment {
       const result = await connect.COMMENTS().insertOne(
         {
           ...comment,
-          user,
+          orderItemId: comment.orderItemId
+            ? toObjectId(comment.orderItemId)
+            : null,
+          userId: user._id,
+          userName: user.name,
           commentLeft,
           commentRight,
           createdAt: ISODateNow(),
@@ -112,6 +143,14 @@ export default class Comment {
           session
         }
       );
+
+      await connect
+        .ORDER_ITEMS()
+        .updateOne(
+          { _id: toObjectId(data.orderItemId) },
+          { $set: { reviewId: toObjectId(result.insertedId) } },
+          { session }
+        );
 
       await session.commitTransaction();
 
