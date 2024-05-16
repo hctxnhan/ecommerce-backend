@@ -170,7 +170,13 @@ export function findMyOrders(userId, { page, limit, status }) {
                             input: '$orderItems',
                             as: 'item',
                             cond: {
-                              $eq: ['$$item.status', 'processing']
+                              // $eq: ['$$item.status', 'processing']
+                              // processing or confirmed
+                              $or: [
+                                { $eq: ['$$item.status', 'processing'] },
+                                { $eq: ['$$item.status', 'confirmed'] },
+                                { $eq: ['$$item.status', 'shipping'] }
+                              ]
                             }
                           }
                         }
@@ -191,7 +197,7 @@ export function findMyOrders(userId, { page, limit, status }) {
                                 input: '$orderItems',
                                 as: 'item',
                                 cond: {
-                                  $eq: ['$$item.status', 'pending']
+                                  $eq: ['$$item.status', 'cancelled']
                                 }
                               }
                             }
@@ -201,8 +207,9 @@ export function findMyOrders(userId, { page, limit, status }) {
                           }
                         ]
                       },
-                      then: 'pending',
-                      else: 'cancelled'
+                      then: 'cancelled',
+                      
+                      else: 'pending'
                     }
                   }
                 }

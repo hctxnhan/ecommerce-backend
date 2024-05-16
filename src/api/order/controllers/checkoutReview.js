@@ -20,6 +20,7 @@ const reqBodySchema = z.object({
         productName: z.string(),
         quantity: z.number(),
         price: z.number(),
+        type: z.string(),
         total: z.number(),
         ownerId: z.string().transform((val) => new ObjectId(val))
       })

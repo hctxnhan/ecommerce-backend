@@ -12,6 +12,7 @@ import { findProductById } from '../../product/product.services.js';
 const reqBodySchema = z.object({
   productId: z.string(),
   productName: z.string(),
+  type: z.string(),
   quantity: z.number(),
   price: z.number(),
   ownerId: z.string().optional()

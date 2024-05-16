@@ -60,8 +60,6 @@ export function findAllDiscounts(
           $gte: currentDate
         };
 
-  // console.log(toObjectId(ownerId), endDate, !(status === 'inactive'));
-
   return connect
     .DISCOUNTS()
     .find({

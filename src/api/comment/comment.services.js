@@ -148,8 +148,5 @@ export async function hasRating(orderItemId, userId) {
     userId: toObjectId(userId)
   }) !== null;
 
-  console.log('res', res);
-  
-
   return res;
 }

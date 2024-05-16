@@ -16,8 +16,6 @@ async function handler(req, res) {
     throw createHttpError.BadRequest(result.message);
   }
 
-  console.log(result);
-
   await connect.ORDER_ITEMS().updateOne(
     {
       _id: result.data.orderItemId

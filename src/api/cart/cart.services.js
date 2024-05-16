@@ -43,7 +43,7 @@ export async function findCartOfCustomer(customerId) {
   }
   */
 export async function addItemToCart(customerId, newItem) {
-  const { productId, productName, price, quantity, ownerId } = newItem;
+  const { productId, productName, price, quantity, ownerId, type } = newItem;
 
   const cart = await findCartOfCustomer(customerId);
 
@@ -62,6 +62,7 @@ export async function addItemToCart(customerId, newItem) {
       productName,
       price,
       quantity,
+      type,
       ownerId: new ObjectId(ownerId),
       total: quantity * price
     });
